@@ -53,6 +53,7 @@ BOOL WINAPI HandlerRoutine(__in  DWORD dwCtrlType)
     case CTRL_BREAK_EVENT:
     case CTRL_CLOSE_EVENT:
         std::cout << " stop scheduler" << endl;
+        exit(0);
         _scheduler->stop ();
         return true;// we handle the msg
     default:

@@ -5,8 +5,6 @@ using namespace std;
 
 namespace OpenDSP
 {
-    extern dsp_log& log;
-
     namespace dot11a
     {
 

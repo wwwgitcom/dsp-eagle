@@ -22,4 +22,9 @@ namespace OpenDSP
         void clear_filters();
         void operator()(const char * format, ... );
     };
+#if 1
+#define log(...)
+#else
+    extern dsp_log& log;
+#endif
 }

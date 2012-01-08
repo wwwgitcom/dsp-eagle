@@ -2,8 +2,6 @@
 #include "dsp_log.h"
 namespace OpenDSP
 {
-    static dsp_log& log = dsp_log::Instance();
-
     dsp_pipeline::dsp_pipeline()
     {
 
