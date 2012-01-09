@@ -403,7 +403,7 @@ namespace OpenDSP
     dsp_switch_block::dsp_switch_block(const std::string &name, dsp_io_signature &input_signature, dsp_io_signature &output_signature)
         : dsp_block(name, input_signature, output_signature)
     {
-        assert(input_signature.numberof_streams == 1);
+        assert(input_signature.numberof_streams() == 1);
         m_type = SWITCH;
         m_next = NULL;
     }
