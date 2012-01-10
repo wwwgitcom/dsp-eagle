@@ -2,6 +2,20 @@
 #ignore thumbnails created by windows
 Thumbs.db
 #Ignore files build by Visual Studio
+11ndump/*
+dot11a/*
+DSPDraw/*
+ipch/*
+MIMO_On_Rails/*
+sdroma/*
+ldpc/*
+bbn_matlab/*
+OpenDSP/Ref/*
+OpenDSP/11ndump/*
+OpenDSP/Archive/*
+OpenDSP/3rdpart/*
+*.dmp
+*.txt
 *.obj
 *.exe
 *.pdb
@@ -28,6 +42,6 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 
-ipch/*
 OpenDSP.opensdf
 OpenDSP.sdf
+OpenDSP/.DS_Store
