@@ -407,7 +407,7 @@ void dot11n_phy::mcs8_entry(dot11n_tx_buffer& tx_buffer)
             m_scrambler(m_psrc[m_srcidx], m_scramble_outputbuffer[0]);
             if (m_srcidx == m_srcsize)
             {
-                m_scramble_outputbuffer[0] &= 0XC0;//? should be 0x00
+                m_scramble_outputbuffer[0] &= 0XC0;
             }
             m_srcidx++;
             m_conv12(m_scramble_outputbuffer[0], (unsigned __int16&)stream_splitter_buffer[m_conv_outputcnt]);
@@ -1671,8 +1671,10 @@ void dot11n_phy::rx_scheduler()
                 printf("[Perf][FD] %d -> %d, time = %.3f us, rate = %.3f MSPS\n",
                     beginsbidx, endsbidx, tduration.us(), (endsbidx - beginsbidx) * 28 / tduration.us());
 #endif
-                //m_rx_state = s_l_ltf;
-            }else break;
+                m_rx_state = s_l_ltf;
+            }
+            else
+                break;
         case s_l_ltf:
 #if perf_unit_enabled
             beginsbidx = m_rx_current_sb_idx;
@@ -1687,7 +1689,7 @@ void dot11n_phy::rx_scheduler()
                 printf("[Perf][LTF] %d -> %d, time = %.3f us, rate = %.3f MSPS\n",
                     beginsbidx, endsbidx, tduration.us(), (endsbidx - beginsbidx) * 28 / tduration.us());
 #endif
-                //m_rx_state = s_l_sig;
+                m_rx_state = s_l_sig;
             }else break;
         case s_l_sig:
 #if perf_unit_enabled
@@ -1707,7 +1709,7 @@ void dot11n_phy::rx_scheduler()
                 printf("[Perf][LSIG] %d -> %d, time = %.3f us, rate = %.3f MSPS\n",
                     beginsbidx, endsbidx, tduration.us(), (endsbidx - beginsbidx) * 28 / tduration.us());
 #endif
-                //m_rx_state = s_ht_sig1;
+                m_rx_state = s_ht_sig1;
             }else break;
 #endif
 #if dot11a_mode
@@ -1749,7 +1751,7 @@ void dot11n_phy::rx_scheduler()
                 printf("[Perf][HTSIG2] %d -> %d, time = %.3f us, rate = %.3f MSPS\n",
                     beginsbidx, endsbidx, tduration.us(), (endsbidx - beginsbidx) * 28 / tduration.us());
 #endif
-                //m_rx_state = s_ht_stf;
+                m_rx_state = s_ht_stf;
             } else 
             {
                 m_rx_state = s_frame_detection;
@@ -1770,7 +1772,7 @@ void dot11n_phy::rx_scheduler()
                 printf("[Perf][HTSTF] %d -> %d, time = %.3f us, rate = %.3f MSPS\n",
                     beginsbidx, endsbidx, tduration.us(), (endsbidx - beginsbidx) * 28 / tduration.us());
 #endif
-                //m_rx_state = s_ht_ltf1;
+                m_rx_state = s_ht_ltf1;
             }else break;
         case s_ht_ltf1:
 #if perf_unit_enabled
@@ -1787,7 +1789,7 @@ void dot11n_phy::rx_scheduler()
                 printf("[Perf][HTLTF1] %d -> %d, time = %.3f us, rate = %.3f MSPS\n",
                     beginsbidx, endsbidx, tduration.us(), (endsbidx - beginsbidx) * 28 / tduration.us());
 #endif
-                //m_rx_state = s_ht_ltf2;
+                m_rx_state = s_ht_ltf2;
             }else break;
         case s_ht_ltf2:
 #if perf_unit_enabled
@@ -1804,7 +1806,7 @@ void dot11n_phy::rx_scheduler()
                 printf("[Perf][HTLTF2] %d -> %d, time = %.3f us, rate = %.3f MSPS\n",
                     beginsbidx, endsbidx, tduration.us(), (endsbidx - beginsbidx) * 28 / tduration.us());
 #endif
-                //m_rx_state = s_ht_data;
+                m_rx_state = s_ht_data;
             }else break;
         case s_ht_data:
 #if perf_unit_enabled
@@ -1844,6 +1846,8 @@ bool dot11n_phy::rx_on_frame_detection(dot11n_rx_stream& rxstream)
 #if 1
     int positivecnt = 0;
     
+    static int icount = 0;
+
     //m_plot.begin_plot("");
     for ( int n = 0; n < m_max_cca_sbcount; n++ )
     {
@@ -1852,6 +1856,7 @@ bool dot11n_phy::rx_on_frame_detection(dot11n_rx_stream& rxstream)
 
         for (int vidx = 0; vidx < sb1->v_datacount; vidx++)
         {
+            icount++;
 #if use_fixed_point
             m_autocorr_vi.exec(sb1->v_data[vidx]);
 #else
@@ -1907,13 +1912,15 @@ bool dot11n_phy::rx_on_frame_detection(dot11n_rx_stream& rxstream)
                             //getchar();
 
                             m_rx_cyclic_write_idx = 0;
-                            vidx += 2; // skip 8 samples if possible
+                            vidx += 1; // skip current 4 samples if possible
                             for (; vidx < sb1->v_datacount; vidx++)
                             {
                                 m_rx_cyclic_buffer[0][m_rx_cyclic_write_idx] = sb1->v_data[vidx];
                                 m_rx_cyclic_buffer[1][m_rx_cyclic_write_idx] = sb2->v_data[vidx];
                                 m_rx_cyclic_write_idx++;
                             }
+
+                            printf("peak <- @ %d - %d\n", icount, j);
 
                             m_rx_current_sb_idx = ++m_rxstream;
                             return true;
@@ -2037,7 +2044,7 @@ bool dot11n_phy::rx_on_l_ltf(dot11n_rx_stream& rxstream)
 
 #if use_sse
     v_siso_channel_estimation_i((v_cs*)&m_rx_fsamples_i[0][0], (v_cs*)&m_rx_channel_i[0][0], 16);
-    v_siso_channel_estimation_i((v_cs*)&m_rx_fsamples_i[1][0], (v_cs*)&m_rx_channel_i[1][0], 16);
+    //v_siso_channel_estimation_i((v_cs*)&m_rx_fsamples_i[1][0], (v_cs*)&m_rx_channel_i[1][0], 16);
 #else
     siso_channel_estimation_i(&m_rx_fsamples_i[0][0], &m_rx_channel_i[0][0], 64);
     siso_channel_estimation_i(&m_rx_fsamples_i[1][0], &m_rx_channel_i[1][0], 64);
@@ -2178,10 +2185,10 @@ _work:
     siso_channel_compensate_i(&m_rx_fsamples_i[1][0], &m_rx_channel_i[1][0], &m_rx_channel_compensated_i[1][0], 64);
 #endif
 
-    pilot_tracking_i(&m_rx_channel_compensated_i[0][0], 64);
+    //pilot_tracking_i(&m_rx_channel_compensated_i[0][0], 64);
     
     // MRC combining
-    combine_i(&m_rx_channel_compensated_i[0][0], &m_rx_channel_compensated_i[1][0], &m_rx_channel_compensated_i[0][0]);
+    //combine_i(&m_rx_channel_compensated_i[0][0], &m_rx_channel_compensated_i[1][0], &m_rx_channel_compensated_i[0][0]);
 
     //////////////////////////////////////////////////////////////////////////
 #else// float point version

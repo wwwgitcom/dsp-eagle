@@ -65,7 +65,7 @@ void dot11n_tx_test()
 
 void dot11n_rx_test(char** dumpfiles)
 {
-#if 1
+#if 0
     //SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
     //SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
     SetThreadAffinityMask(GetCurrentThread(), 0x1);
@@ -73,8 +73,8 @@ void dot11n_rx_test(char** dumpfiles)
 
     if (NULL == dumpfiles)
     {
-        char* teststreams[] = {"MiMoRx_0.dmp", "MiMoRx_1.dmp"};
-        //char* teststreams[] = {"mimo_0.dmp", "mimo_1.dmp"};
+        //char* teststreams[] = {"MiMoRx_0.dmp", "MiMoRx_1.dmp"};
+        char* teststreams[] = {"c:\\mimo_0.dmp", "c:\\mimo_1.dmp"};
         //char* teststreams[] = {"miso2.dmp", "miso2.dmp"};
         //char* teststreams[] = {"54Mbps.dmp", "54Mbps.dmp"};
         dot11nphy.m_rxstream.load(teststreams);
