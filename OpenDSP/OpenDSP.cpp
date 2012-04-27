@@ -63,31 +63,12 @@ BOOL WINAPI HandlerRoutine(__in  DWORD dwCtrlType)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-    OpenDSP::global_init();
+    //OpenDSP::global_init();
     
+    dsp_testunit(argc, argv);
 
-#if 0
-    if (config->GetCPUProcessorCount() > 4)
-    {
-        SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS);
 
-        static const int mmsize = 10 * 1024 * 1024;
-#if 1
-        for (int i = 0; i < 100; i++)
-        {
-            char*  lpAddress = new char[mmsize];
-            printf("%d. Alloc %d memory! %p\n", i, mmsize, lpAddress);
-        }
-#else
-        for (int i = 0; i < 100; i++)
-        {
-            LPVOID lpAddress = VirtualAlloc(NULL, mmsize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-            BOOL bLocked = VirtualLock(lpAddress, mmsize);
-            printf("Alloc %d memory! %p. lock %d\n", mmsize, lpAddress, bLocked);
-        }
-#endif
-    }
-#endif
+
     //SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
     //SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
     //SetThreadAffinityMask(GetCurrentThread(), 0x2);

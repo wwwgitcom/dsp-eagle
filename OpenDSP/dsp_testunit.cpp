@@ -17,8 +17,10 @@ void dsp_dot11a_test();
 
 int dsp_testunit(int argc, _TCHAR* argv[])
 {
+#if 0
     dsp_dot11a_test();
     return 0;
+#endif
 #if 0
     multi_task_test();
     return 0;

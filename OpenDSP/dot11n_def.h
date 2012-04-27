@@ -5,7 +5,7 @@
 
 #define dot11a_mode         0
 #define use_fixed_point     1
-#define use_sse             0
+#define use_sse             1
 #define draw_enabled        0
 #define perf_enabled        1
 #define perf_unit_enabled   0
