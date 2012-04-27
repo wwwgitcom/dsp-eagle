@@ -43,8 +43,6 @@ int dsp_testunit(int argc, _TCHAR* argv[])
 
 #if 0
     dot11n_tx_test();
-    txbuffer.toRxDumpFile20M("mimo");
-    //txbuffer.toTxtFile("mimo");
 #else
     if (argc < 3)
     {

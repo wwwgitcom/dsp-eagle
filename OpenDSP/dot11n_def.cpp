@@ -31,8 +31,8 @@ const v_align(16) v_cs::type dot11n_phy::m_vLLTFMask[16] =
 
     //1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1
     { 0xFFFF0000, 0xFFFF0000, 0xFFFF0000, 0xFFFF0000 },
-    { 0x0000FFFF, 0x0000FFFF, 0xFFFF0000, 0xFFFF0000 },
-    { 0x0000FFFF, 0xFFFF0000, 0x0000FFFF, 0xFFFF0000 },
+    { 0xFFFF0000, 0x0000FFFF, 0x0000FFFF, 0xFFFF0000 },
+    { 0xFFFF0000, 0x0000FFFF, 0xFFFF0000, 0x0000FFFF },
     { 0xFFFF0000, 0xFFFF0000, 0xFFFF0000, 0xFFFF0000 }
 };
 
@@ -2044,8 +2044,20 @@ bool dot11n_phy::rx_on_l_ltf(dot11n_rx_stream& rxstream)
 
 #if use_sse
     v_siso_channel_estimation_i((v_cs*)&m_rx_fsamples_i[0][0], (v_cs*)&m_rx_channel_i[0][0], 16);
-    //v_siso_channel_estimation_i((v_cs*)&m_rx_fsamples_i[1][0], (v_cs*)&m_rx_channel_i[1][0], 16);
+    v_siso_channel_estimation_i((v_cs*)&m_rx_fsamples_i[1][0], (v_cs*)&m_rx_channel_i[1][0], 16);
 #else
+
+    //
+    //v_siso_channel_estimation_i((v_cs*)&m_rx_fsamples_i[0][0], (v_cs*)&m_rx_channel_i[0][0], 16);
+    //siso_channel_estimation_i(&m_rx_fsamples_i[0][0], &m_rx_channel_i[1][0], 64);
+
+    //for (int i = 0; i < 64; i++)
+    //{
+    //    printf("%d, %d -- %d, %d\n", m_rx_channel_i[0][i].re, m_rx_channel_i[0][i].im,
+    //        m_rx_channel_i[1][i].re, m_rx_channel_i[1][i].im);
+    //}
+    //
+
     siso_channel_estimation_i(&m_rx_fsamples_i[0][0], &m_rx_channel_i[0][0], 64);
     siso_channel_estimation_i(&m_rx_fsamples_i[1][0], &m_rx_channel_i[1][0], 64);
 #endif
@@ -2476,6 +2488,16 @@ _work:
     v_siso_channel_compensate_i((v_cs*)&m_rx_fsamples_i[0][0], (v_cs*)&m_rx_channel_i[0][0], (v_cs*)&m_rx_channel_compensated_i[0][64], 16);
     v_siso_channel_compensate_i((v_cs*)&m_rx_fsamples_i[1][0], (v_cs*)&m_rx_channel_i[1][0], (v_cs*)&m_rx_channel_compensated_i[1][64], 16);
 #else
+    //// check
+    //v_siso_channel_compensate_i((v_cs*)&m_rx_fsamples_i[0][0], (v_cs*)&m_rx_channel_i[0][0], (v_cs*)&m_rx_channel_compensated_i[0][0], 16);
+    //siso_channel_compensate_i(&m_rx_fsamples_i[0][0], &m_rx_channel_i[0][0], &m_rx_channel_compensated_i[0][64], 64);
+    //for (int i = 0; i < 64; i++)
+    //{
+    //    printf("(%d,%d)\n", m_rx_channel_compensated_i[0][i].re - m_rx_channel_compensated_i[0][i+64].re, 
+    //        m_rx_channel_compensated_i[0][i].im - m_rx_channel_compensated_i[0][i+64].im);
+    //}
+    //// --<
+
     siso_channel_compensate_i(&m_rx_fsamples_i[0][0], &m_rx_channel_i[0][0], &m_rx_channel_compensated_i[0][64], 64);
     siso_channel_compensate_i(&m_rx_fsamples_i[1][0], &m_rx_channel_i[1][0], &m_rx_channel_compensated_i[1][64], 64);
 #endif

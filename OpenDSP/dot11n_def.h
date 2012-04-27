@@ -925,6 +925,7 @@ struct dot11n_phy
         }
     }
 
+    // issue: not match with C code
     void v_siso_channel_estimation_i(v_cs* pcsin, v_cs* pcschannel, int vcount)
     {
         v_i  vsqr, vsqrtemp;
@@ -937,6 +938,7 @@ struct dot11n_phy
         for (i = 0; i < 7; i++)
         {
             v_cs& vin = (v_cs&)pcsin[i];
+            int sqr;
             vsqr = vin.v_sqr2i();
 
             vin.v_convert2ci((v_ci&)vciinput1, (v_ci&)vciinput2);
@@ -949,28 +951,36 @@ struct dot11n_phy
             vciinput1 = v_add(vciinput1, vsqrtemp);
             vciinput2 = v_add(vciinput2, vsqrtemp);
 
-            v = vciinput1.v_get_at<0>() / vsqr.v_get_at<0>();
+            sqr = vsqr.v_get_at<0>();
+            if (sqr == 0) sqr = 1;
+            v = vciinput1.v_get_at<0>() / sqr;
             vciinput1.v_set_at<0>( v );
 
-            v = vciinput1.v_get_at<1>() / vsqr.v_get_at<0>();
+            v = vciinput1.v_get_at<1>() / sqr;
             vciinput1.v_set_at<1>( v );
 
-            v = vciinput1.v_get_at<2>() / vsqr.v_get_at<1>();
+            sqr = vsqr.v_get_at<1>();
+            if (sqr == 0) sqr = 1;
+            v = vciinput1.v_get_at<2>() / sqr;
             vciinput1.v_set_at<2>( v );
 
-            v = vciinput1.v_get_at<3>() / vsqr.v_get_at<1>();
+            v = vciinput1.v_get_at<3>() / sqr;    
             vciinput1.v_set_at<3>( v );
 
-            v = vciinput2.v_get_at<0>() / vsqr.v_get_at<2>();
+            sqr = vsqr.v_get_at<2>();
+            if (sqr == 0) sqr = 1;
+            v = vciinput2.v_get_at<0>() / sqr;
             vciinput2.v_set_at<0>( v );
 
-            v = vciinput2.v_get_at<1>() / vsqr.v_get_at<2>();
+            v = vciinput2.v_get_at<1>() / sqr;
             vciinput2.v_set_at<1>( v );
 
-            v = vciinput2.v_get_at<2>() / vsqr.v_get_at<3>();
+            sqr = vsqr.v_get_at<3>();
+            if (sqr == 0) sqr = 1;
+            v = vciinput2.v_get_at<2>() / sqr;
             vciinput2.v_set_at<2>( v );
 
-            v = vciinput2.v_get_at<3>() / vsqr.v_get_at<3>();
+            v = vciinput2.v_get_at<3>() / sqr;
             vciinput2.v_set_at<3>( v );
 
             vout = v_convert2cs((v_ci&)vciinput1, (v_ci&)vciinput2);
@@ -984,6 +994,7 @@ struct dot11n_phy
         for (i = 9; i < 16; i++)
         {
             v_cs& vin = (v_cs&)pcsin[i];
+            int sqr;
             vsqr = vin.v_sqr2i();
 
             vin.v_convert2ci((v_ci&)vciinput1, (v_ci&)vciinput2);
@@ -996,28 +1007,36 @@ struct dot11n_phy
             vciinput1 = v_add(vciinput1, vsqrtemp);
             vciinput2 = v_add(vciinput2, vsqrtemp);
 
-            v = vciinput1.v_get_at<0>() / vsqr.v_get_at<0>();
+            sqr = vsqr.v_get_at<0>();
+            if (sqr == 0) sqr = 1;
+            v = vciinput1.v_get_at<0>() / sqr;
             vciinput1.v_set_at<0>( v );
 
-            v = vciinput1.v_get_at<1>() / vsqr.v_get_at<0>();
+            v = vciinput1.v_get_at<1>() / sqr;
             vciinput1.v_set_at<1>( v );
 
-            v = vciinput1.v_get_at<2>() / vsqr.v_get_at<1>();
+            sqr = vsqr.v_get_at<1>();
+            if (sqr == 0) sqr = 1;
+            v = vciinput1.v_get_at<2>() / sqr;
             vciinput1.v_set_at<2>( v );
 
-            v = vciinput1.v_get_at<3>() / vsqr.v_get_at<1>();
+            v = vciinput1.v_get_at<3>() / sqr;
             vciinput1.v_set_at<3>( v );
 
-            v = vciinput2.v_get_at<0>() / vsqr.v_get_at<2>();
+            sqr = vsqr.v_get_at<2>();
+            if (sqr == 0) sqr = 1;
+            v = vciinput2.v_get_at<0>() / sqr;
             vciinput2.v_set_at<0>( v );
 
-            v = vciinput2.v_get_at<1>() / vsqr.v_get_at<2>();
+            v = vciinput2.v_get_at<1>() / sqr;
             vciinput2.v_set_at<1>( v );
 
-            v = vciinput2.v_get_at<2>() / vsqr.v_get_at<3>();
+            sqr = vsqr.v_get_at<3>();
+            if (sqr == 0) sqr = 1;
+            v = vciinput2.v_get_at<2>() / sqr;
             vciinput2.v_set_at<2>( v );
 
-            v = vciinput2.v_get_at<3>() / vsqr.v_get_at<3>();
+            v = vciinput2.v_get_at<3>() / sqr;
             vciinput2.v_set_at<3>( v );
 
             vout = v_convert2cs((v_ci&)vciinput1, (v_ci&)vciinput2);

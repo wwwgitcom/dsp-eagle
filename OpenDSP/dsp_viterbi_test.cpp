@@ -44,7 +44,7 @@ according to DVB-T EN300744 pages 40.
 
 struct ViterbiTest 
 {
-    static const int m_nSource  = 30000; // max 536870910
+    static const int m_nSource  = 6; // max 536870910
     static const int m_nEncoded = m_nSource * 2;// 1/2 coding
     //static const int m_nEncoded = m_nSource * 3 / 2;// 2/3 coding
     //static const int m_nEncoded = m_nSource * 4 / 3;// 3/4 coding
@@ -150,6 +150,34 @@ struct ViterbiTest
             m_demapper.demap_64qam(pcInput[i], &pOutput[j]);
             j += 6;
         }
+    }
+
+
+    void Run_Test0()
+    {
+        m_Source[0] = 0x0a;
+        m_Source[1] = 0xdc;
+        m_Source[2] = 0x05;
+        m_Source[3] = 0x03;
+        m_Source[4] = 0x10;
+        m_Source[5] = 0x00;
+        unsigned __int16* pEncoded = (unsigned __int16*)m_EncodedSource;
+        // conv encode
+        m_conv12.reset(0);
+        for (int i = 0; i < m_nSource; i++)
+        {
+            m_conv12(m_Source[i], pEncoded[i]);
+        }
+
+        // map
+        for (int i = 0; i < m_nEncoded; i++)
+        {
+            mapper::dsp_mapper_bpsk<complex16>::output_type &Mapped = 
+                reinterpret_cast<mapper::dsp_mapper_bpsk<complex16>::output_type&>(m_Mapped_i[i * 8]);
+            Mapped = m_mapbpsk[m_EncodedSource[i]];
+        }
+
+        DemapBPSK(m_Mapped_i, m_Demapped, m_nMapped);
     }
 
     // bpsk 1/2
@@ -547,7 +575,19 @@ Data rate(Mbits/s) Modulation Coding rate(R) Coded bits per subcarrier(NBPSC) Co
 
 ViterbiTest vt;
 
-dsp_viterbi_64<36, 256> dv;
+dsp_viterbi_64<48, 48> dv;
+
+int viterbi_check()
+{
+    dv.m_pSoftBits     = vt.m_Demapped;
+    dv.m_pDecodedBytes = vt.m_Decoded;
+    dv.m_nDecodedBytes = vt.m_nSource;
+
+    vt.Run_Test0();
+    dv.Run1();
+
+    return 1;
+}
 
 
 int viterbi_test(float EbN0)

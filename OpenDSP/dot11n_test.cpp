@@ -47,11 +47,11 @@ void dot11n_tx_test()
         srcbytes[i] = 0;
     }
 
-    //cout << "mcs8  \n";    mcs_test([&](){ dot11nphy.mcs8_entry(txbuffer); });
+    cout << "mcs8  \n";    mcs_test([&](){ dot11nphy.mcs8_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
     //cout << "mcs9  \n";    mcs_test([&](){ dot11nphy.mcs9_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
-    cout << "mcs10 ";    mcs_test([&](){ dot11nphy.mcs10_entry(txbuffer); });
+    //cout << "mcs10 ";    mcs_test([&](){ dot11nphy.mcs10_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
     //cout << "mcs11 ";    mcs_test([&](){ dot11nphy.mcs11_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
@@ -61,6 +61,8 @@ void dot11n_tx_test()
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
     //cout << "mcs14 ";    mcs_test([&](){ dot11nphy.mcs14_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
+
+    txbuffer.toRxDumpFile20M("mimo");
 }
 
 void dot11n_rx_test(char** dumpfiles)
