@@ -41,12 +41,14 @@ namespace OpenDSP
 
     void dsp_flowgraph::connect(const dsp_endpoint &src, const dsp_endpoint &dst)
     {
+        dsp_edge edge = dsp_edge(src,dst);
         check_valid_port(src.block()->output_signature(), src.port());
         check_valid_port(dst.block()->input_signature(), dst.port());
         check_dst_not_used(dst);
         check_type_match(src, dst);
 
-        m_edges.push_back(dsp_edge(src,dst));
+        src.block()->add_connection(edge);        
+        m_edges.push_back(edge);
     }
     
     void dsp_flowgraph::disconnect(dsp_basic_block_ptr src_block, int src_port, dsp_basic_block_ptr dst_block, int dst_port)
@@ -336,6 +338,16 @@ namespace OpenDSP
         return unique_vector<dsp_basic_block_ptr>(tmp);
     }
 
+    void dsp_flowgraph::bind(void * context)
+    {
+        m_context = context;
+        m_blocks  = calc_used_blocks();
+        for (int i = 0; i < m_blocks.size(); i++)
+        {
+            m_blocks[i]->bind(context);
+        }
+    }
+
     dsp_edge_vector_t
         dsp_flowgraph::calc_connections(dsp_basic_block_ptr block, bool check_inputs)
     {
@@ -559,6 +571,19 @@ namespace OpenDSP
             connect_block_inputs(*p);
     }
 
+    void dsp_flat_flowgraph::setup_connections2()
+    {
+        dsp_basic_block_vector_t blocks = calc_used_blocks();
+
+        // Assign block details to blocks
+        for (dsp_basic_block_viter_t p = blocks.begin(); p != blocks.end(); p++)
+            cast_to_block_ptr(*p)->set_detail(allocate_block_detail(*p));
+
+        // Connect inputs to outputs for each block
+        for(dsp_basic_block_viter_t p = blocks.begin(); p != blocks.end(); p++)
+            connect_block_inputs(*p);
+    }
+
     dsp_block_detail_ptr
         dsp_flat_flowgraph::allocate_block_detail(dsp_basic_block_ptr block)
     {
@@ -759,4 +784,39 @@ namespace OpenDSP
         return result;
     }
 
+    void dsp_flat_flowgraph::connect_d(dsp_basic_block_ptr src_block, int src_port, dsp_basic_block_ptr dst_block, int dst_port)
+    {
+        connect_d(dsp_endpoint(src_block, src_port), dsp_endpoint(dst_block, dst_port));
+    }
+
+    void dsp_flat_flowgraph::connect_d(const dsp_endpoint &src, const dsp_endpoint &dst)
+    {
+        dsp_edge edge = dsp_edge(src,dst);
+        src.block()->add_connection(edge);
+
+        dsp_block_ptr src_block = cast_to_block_ptr( src.block() );
+        dsp_block_ptr dst_block = cast_to_block_ptr( dst.block() );
+
+        dsp_block_detail_ptr src_detail = src_block->detail();
+        dsp_buffer_ptr src_buffer = allocate_buffer(src_block, src.port());
+        src_detail->set_output(src.port(), src_buffer);
+
+        dsp_block_detail_ptr dst_detail = dst_block->detail();
+        dst_detail->set_input(dst.port(), dsp_buffer_add_reader(src_buffer, dst_block));
+
+        m_edges.push_back(edge);
+    }
+
+    void dsp_flat_flowgraph::connect_c(dsp_basic_block_ptr src_block, int src_port, dsp_basic_block_ptr dst_block, int dst_port)
+    {
+        connect_c(dsp_endpoint(src_block, src_port), dsp_endpoint(dst_block, dst_port));
+    }
+
+    void dsp_flat_flowgraph::connect_c(const dsp_endpoint &src, const dsp_endpoint &dst)
+    {
+        dsp_edge edge = dsp_edge(src,dst);
+        src.block()->add_connection(edge);
+
+        m_edges.push_back(edge);
+    }
 }

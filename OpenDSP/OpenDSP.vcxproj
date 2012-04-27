@@ -106,6 +106,7 @@
     <ClInclude Include="dsp_channel.h" />
     <ClInclude Include="dsp_complex.h" />
     <ClInclude Include="dsp_crc.h" />
+    <ClInclude Include="dsp_dot11a_2.h" />
     <ClInclude Include="dsp_draw.h" />
     <ClInclude Include="dsp_encode.h" />
     <ClInclude Include="dsp_fifo.h" />
@@ -152,6 +153,7 @@
     <ClCompile Include="dsp_block_test.cpp" />
     <ClCompile Include="dsp_buffer.cpp" />
     <ClCompile Include="dsp_buffer_test.cpp" />
+    <ClCompile Include="dsp_dot11a_2.cpp" />
     <ClCompile Include="dsp_file_source.cpp" />
     <ClCompile Include="dsp_flowgraph.cpp" />
     <ClCompile Include="dsp_flowgraph_test.cpp" />

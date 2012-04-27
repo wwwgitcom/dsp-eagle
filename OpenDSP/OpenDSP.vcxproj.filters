@@ -156,6 +156,9 @@
     <ClInclude Include="dsp_log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dsp_dot11a_2.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -264,6 +267,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dsp_global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp_dot11a_2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

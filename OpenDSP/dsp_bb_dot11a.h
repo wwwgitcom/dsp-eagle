@@ -214,7 +214,7 @@ namespace OpenDSP
             state general_work()
             {
                 consume(0, ninput(0));
-                return READY;
+                return DONE;
             }
             void reset(){}
         };
@@ -401,6 +401,25 @@ namespace OpenDSP
         	void reset();
             bool crc_check_passed();
             void set_length(int length){m_length = length;}
+        };
+
+        class bb_switch : public dsp_switch_block
+        {
+        public:
+        	bb_switch::bb_switch();
+        	bb_switch::~bb_switch();
+        	dsp_block::state general_work();
+        	void reset();
+        };
+
+        class dot11a_context
+        {
+        public:
+            dot11a_context(){memset(this, 0, sizeof(dot11a_context));}
+            int plcp_state;
+            short frequency_offset;
+            short frequency_offset_delta;
+            v_align(16) complex16        m_channel_state[64];
         };
     }
 }

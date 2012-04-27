@@ -46,8 +46,8 @@ namespace OpenDSP
 
         void scheduler::build_flow_graph()
         {
-            m_source                      = new dsp_file_source("D:\\FANGJi\\KuaiPan\\OpenDSP\\11ndump\\11a\\16qam\\machine1\\1.dmp");
-            //m_source                     = new dsp_file_source("C:\\DiskD\\Danial\\KuaiPan\\OpenDSP\\11ndump\\11g\\cable1\\MiMoRx_1_30047401_1220202304.dmp");
+            //m_source                      = new dsp_file_source("D:\\FANGJi\\KuaiPan\\OpenDSP\\11ndump\\11a\\16qam\\machine1\\1.dmp");
+            m_source                     = new dsp_file_source("C:\\DiskD\\Projects\\OpenDSP\\11ndump\\11g\\cable1\\MiMoRx_1_30047401_1220202304.dmp");
             //m_source                     = new dsp_file_source("C:\\DiskD\\Danial\\KuaiPan\\OpenDSP\\11ndump\\11a\\16qam\\machine3\\2.dmp");
             //m_source                   = new dsp_file_source("mimo_0.dmp");
             //m_source                   = new dsp_file_source("mimorx_0.dmp");
@@ -194,7 +194,7 @@ namespace OpenDSP
                 m_pipeline0.execute();
                 m_pipeline1.execute();
 
-                
+                /////////////////////
                 m_foe->general_work();
                 m_foc->set_frequency_offset(
                     m_foe->frequency_offset()

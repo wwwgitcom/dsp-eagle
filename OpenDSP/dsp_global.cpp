@@ -7,10 +7,6 @@ namespace OpenDSP
 
     void global_init()
     {
-        log.add_include_filter("perf");
-        log.add_exclude_filter("file_source");
-        log.add_exclude_filter("remove_dc");
-        log.add_exclude_filter("carrier_sense");
     }
 
     

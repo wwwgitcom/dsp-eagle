@@ -83,13 +83,21 @@ namespace OpenDSP
         m_input_signature  = input_signature;
         m_output_signature = output_signature;
         m_unique_id        = s_next_id++;
-        m_color            = WHITE;        
+        m_color            = WHITE;
         s_ncurrently_allocated++;
+        m_down_streams.resize(output_signature.numberof_streams());
     }
 
     dsp_basic_block::~dsp_basic_block()
     {
         s_ncurrently_allocated--;
+    }
+
+    void dsp_basic_block::add_connection(dsp_edge &edge)
+    {
+        assert(edge.src().port() < m_output_signature.numberof_streams()
+            && edge.src().port() >= 0);
+        m_down_streams[edge.src().port()] = edge;
     }
     //////////////////////////////////////////////////////////////////////////
     dsp_block::dsp_block(const std::string &name, dsp_io_signature& input_signature, dsp_io_signature& output_signature)
@@ -97,8 +105,8 @@ namespace OpenDSP
     m_fixed_rate(false), m_fixed_input_items(0), m_fixed_output_items(0)
     {
         m_type = BLOCK;
-        m_input_blocks.resize(input_signature.numberof_streams());
-        m_output_blocks.resize(input_signature.numberof_streams());
+        m_detail = dsp_make_block_detail(input_signature.numberof_streams(),
+            output_signature.numberof_streams());
     }
     dsp_block::~dsp_block ()
     {
@@ -143,6 +151,22 @@ namespace OpenDSP
     void dsp_block::dump_input(int which)
     {
         detail()->input(which)->buffer()->dump();
+    }
+
+    void dsp_block::internal_work()
+    {
+        dsp_block_ptr this_block = cast_to_block_ptr( this );
+        dsp_block::state st;
+        st = this_block->general_work();
+        while (st == dsp_block::READY)
+        {
+            for (int i = 0; i < m_down_streams.size(); i++)
+            {
+                dsp_block_ptr block = cast_to_block_ptr( m_down_streams[i].dst().block() );
+                block->internal_work();
+            }
+            st = this_block->general_work();
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -405,13 +429,20 @@ namespace OpenDSP
     {
         assert(input_signature.numberof_streams() == 1);
         m_type = SWITCH;
-        m_next = NULL;
     }
     dsp_switch_block::~dsp_switch_block(){}
 
-    void dsp_switch_block::switch_to(int which)
+    void dsp_switch_block::switch_to(int from, int to)
     {
-        m_next = output_block(which);
-        detail()->input(0)->switch_link(m_next);
+        dsp_buffer_reader_ptr from_reader = detail()->input(from);
+        dsp_block_ptr to_block = cast_to_block_ptr( m_down_streams[to].dst().block() );
+        to_block->detail()->set_input(m_down_streams[to].dst().port(), from_reader);
+        m_link = to_block;
+    }
+
+    void dsp_switch_block::internal_work()
+    {
+        general_work();
+        m_link->internal_work();
     }
 }

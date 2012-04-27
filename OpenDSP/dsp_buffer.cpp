@@ -224,6 +224,7 @@ namespace OpenDSP
     {
         m_write_index       = index_add (m_write_index, nitems);
         m_abs_write_offset += nitems;
+        //dump();
     }
 
     unsigned int dsp_buffer::index_add (unsigned int a, unsigned int b)
@@ -250,7 +251,7 @@ namespace OpenDSP
 
     void dsp_buffer::dump()
     {
-        printf("[dump_buffer]write index: %d\n", m_write_index);
+        printf("[dump_buffer] %p write index: %d\n", m_base, m_write_index);
         for (size_t i = 0; i < m_readers.size (); i++) 
         {
             printf(" [dump_buffer]read index: %d\n", m_readers[i]->m_read_index);

@@ -44,7 +44,6 @@ namespace OpenDSP
                 
                 return BLKD_OUT;
             }
-
             //m_pBefore->DrawScatter(ip, m_length);
 
             m_dc = 0;
@@ -150,6 +149,8 @@ namespace OpenDSP
                 return BLKD_IN;
             }
 
+            //log("cs==>\n");
+
             ip += m_accumulate_samples;
 
             complex32 fc;
@@ -205,6 +206,10 @@ namespace OpenDSP
                 consume(0, m_accumulate_samples - m_corr_length);
                 m_corr_direction = corr_none;
                 m_accumulate_samples = 0;
+
+                dot11a_context* context = (dot11a_context*)m_control;
+                context->plcp_state = 1;
+
                 return DONE;
             }
             else if (m_corr_direction == corr_error)
@@ -298,7 +303,8 @@ namespace OpenDSP
 
             log("%s: peak corr @ %d, boundary @ %d\n", name().c_str(), max_pos, boundary_pos);
             consume(0, boundary_pos);
-
+            dot11a_context* context = (dot11a_context*)m_control;
+            context->plcp_state = 2;
             return DONE;
         }
 
@@ -339,7 +345,8 @@ namespace OpenDSP
             m_frequency_offset = m_frequency_estimator.estimate_i(ip, m_estimation_length, m_estimation_length);
             log("frequency offset = %d\n", m_frequency_offset);
             //consume(0, 2 * m_estimation_length);
-
+            dot11a_context* context = (dot11a_context*)m_control;
+            context->plcp_state = 3;
             return DONE;
         }
 
@@ -511,11 +518,17 @@ namespace OpenDSP
                 return BLKD_IN;
             }
 
-            channel_estimation_i(ip, m_channel_state, 64);
+            dot11a_context* context = (dot11a_context*)m_control;
+
+            channel_estimation_i(ip, context->m_channel_state, 64);
+            //channel_estimation_i(ip, m_channel_state, 64);
 
             //m_draw->DrawSqrt(m_channel_state, 64);
 
             consume(0, 2 * m_estimation_length);
+
+            
+            context->plcp_state = 4;
 
             return DONE;
         }
@@ -568,7 +581,9 @@ namespace OpenDSP
             }
             log("%s: input items = %d, output space = %d, produced = %d\n", 
                 name().c_str(), ninput(0), noutput(0), m_compensation_length);
-            channel_compensation_i(ip, m_channel_state, op);
+            dot11a_context* context = (dot11a_context*)m_control;
+            channel_compensation_i(ip, context->m_channel_state, op);
+            //channel_compensation_i(ip, m_channel_state, op);
 
             //m_draw->DrawSqrt(op, 64);
             //m_draw->DrawScatter(op, 64);
@@ -585,7 +600,7 @@ namespace OpenDSP
         remove_gi::remove_gi()
             : dsp_block("remove_gi",
             dsp_io_signature(1, sizeof(complex16)),
-            dsp_io_signature(0)), m_gi_length(16)
+            dsp_io_signature(1, sizeof(complex16))), m_gi_length(16)
         {
         }
         remove_gi::~remove_gi()
@@ -595,11 +610,12 @@ namespace OpenDSP
         dsp_block::state remove_gi::general_work()
         {
             complex16* ip = input<complex16>(0);
+            complex16* op = output<complex16>(0);
 
-            if (m_symbol_count == 0)
-            {
-                return DONE;
-            }
+            //if (m_symbol_count == 0)
+            //{
+            //    return DONE;
+            //}
 
             if (ninput(0) < 80)
             {
@@ -607,9 +623,14 @@ namespace OpenDSP
             }
 
             log("%s: input items = %d, consume = %d\n", name().c_str(), ninput(0), m_gi_length);
-            consume(0, m_gi_length);
+            
+            memcpy(op, ip + m_gi_length, 64 * sizeof(complex16));
 
-            m_symbol_count--;
+            consume(0, 80);
+            produce(0, 64);
+
+            //consume(0, m_gi_length);
+            //m_symbol_count--;
             return READY;
         }
 
@@ -1073,7 +1094,7 @@ namespace OpenDSP
         pilot_tracking::pilot_tracking()
         	: dsp_block("pilot_tracking", 
         		dsp_io_signature(1, sizeof(complex16)), 
-        		dsp_io_signature(0)), m_theta(0)
+        		dsp_io_signature(1, sizeof(complex16))), m_theta(0)
         {        
         }
         
@@ -1096,11 +1117,20 @@ namespace OpenDSP
         dsp_block::state pilot_tracking::general_work()
         {
         	complex16 *ip = input<complex16>(0);
+            complex16 *op = output<complex16>(0);
             if (ninput(0) < 64)
             {
                 return BLKD_IN;
             }
             m_theta = tracking(ip);
+
+            dot11a_context* context = (dot11a_context*)m_control;
+            context->frequency_offset_delta = m_theta;
+
+            memcpy(op, ip, 64 * sizeof(complex16));
+
+            consume(0, 64);
+            produce(0, 64);
         
         	return READY;
         }
@@ -1216,7 +1246,37 @@ namespace OpenDSP
             m_crc_check_passed  = false;
             m_crc.reset();
         }
+        //////////////////////////////////////////////////////////////////////////
 
+        bb_switch::bb_switch()
+        	: dsp_switch_block("bb_switch", 
+        		dsp_io_signature(1, sizeof(complex16)), 
+        		dsp_io_signature(6, sizeof(complex16)))
+        {
+        }
+        
+        bb_switch::~bb_switch()
+        {
+        }
+        
+        dsp_block::state bb_switch::general_work()
+        {
+            dot11a_context* context = (dot11a_context*)m_control;
+            int my_state = context->plcp_state;
+
+            log("bb_switch : %d\n", my_state);
+
+            switch_to(0, my_state);
+            if (my_state >= 3)
+            {
+                log("");
+            }
+            return READY;
+        }
+        void bb_switch::reset()
+        {
+            switch_to(0, 0);
+        }
 
 
 

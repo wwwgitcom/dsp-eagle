@@ -8,6 +8,69 @@ using namespace std;
 
 namespace OpenDSP
 {
+    /*!
+    * \brief Class representing a specific input or output graph endpoint
+    * \in group internal
+    */
+    class dsp_endpoint
+    {
+    private:
+        dsp_basic_block_ptr m_basic_block;
+        int m_port;
+
+    public:
+        dsp_endpoint() : m_basic_block(), m_port(0) { }
+        dsp_endpoint(dsp_basic_block_ptr block, int port) { m_basic_block = block; m_port = port; }
+        dsp_basic_block_ptr block() const { return m_basic_block; }
+        int port() const { return m_port; }
+
+        bool operator==(const dsp_endpoint &other) const;
+    };    
+
+    inline bool dsp_endpoint::operator==(const dsp_endpoint &other) const
+    {
+        return (m_basic_block == other.m_basic_block && 
+            m_port == other.m_port);
+    }
+
+
+    /*!
+    *\brief Class representing a connection between to graph endpoints
+    *
+    */
+    class dsp_edge
+    {
+    public:
+        dsp_edge() : m_src(), m_dst() { };
+        dsp_edge(const dsp_endpoint &src, const dsp_endpoint &dst) : m_src(src), m_dst(dst) { }
+        ~dsp_edge();
+
+        const dsp_endpoint &src() const { return m_src; }
+        const dsp_endpoint &dst() const { return m_dst; }
+    private:
+        dsp_endpoint m_src;
+        dsp_endpoint m_dst;
+    };
+
+    // Hold vectors of dsp_edge objects
+    typedef std::vector<dsp_edge> dsp_edge_vector_t;
+    typedef std::vector<dsp_edge>::iterator dsp_edge_viter_t;
+
+    inline std::ostream&
+        operator <<(std::ostream &os, const dsp_endpoint endp)
+    {
+        os << endp.block() << ":" << endp.port();
+        return os;
+    }
+
+    inline std::ostream&
+        operator <<(std::ostream &os, const dsp_edge edge)
+    {
+        os << edge.src() << "->" << edge.dst();
+        return os;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
     dsp_io_signature_ptr
         dsp_make_io_signaturev(int numberof_stream,
         const std::vector<int> &sizeof_stream_items);
@@ -38,22 +101,21 @@ namespace OpenDSP
         int sizeof_stream_item (int index) const;
         std::vector<int> sizeof_stream_items() const;
     };
-
+    enum dsp_block_type { CONTROL, BLOCK, SWITCH, SPLIT };
     class dsp_basic_block : public dsp_task::task
     {
-    public:
-        enum block_type { CONTROL, BLOCK, SWITCH, SPLIT };
     protected:
         friend class dsp_flowgraph;
         enum vcolor { WHITE, GREY, BLACK };
-        
 
         std::string          m_name;
         dsp_io_signature     m_input_signature;
         dsp_io_signature     m_output_signature;
         long                 m_unique_id;
         vcolor               m_color;
-        block_type           m_type;
+        dsp_block_type       m_type;
+        dsp_edge_vector_t    m_down_streams;
+        void                *m_control;
 
         dsp_basic_block(void){} //allows pure virtual interface sub-classes
 
@@ -73,7 +135,6 @@ namespace OpenDSP
         void set_output_signature(dsp_io_signature& iosig) {
             m_output_signature = iosig;
         }
-
         /*!
         * \brief Allow the flowgraph to set for sorting and partitioning
         */
@@ -88,7 +149,14 @@ namespace OpenDSP
         dsp_io_signature_ptr output_signature() const { return (dsp_io_signature_ptr)&m_output_signature; }
 
         virtual bool check_topology(int ninputs, int noutputs) { return true; }
-        block_type type() const {return m_type;}
+        dsp_block_type type() const {return m_type;}
+        void add_connection(dsp_edge &edge);
+
+        void post_message(dsp_basic_block_ptr to, void* msg){ to->handle_message(msg);}
+        void handle_message(void* msg){};
+
+        virtual void internal_work() = 0;
+        void bind(void * control){m_control = control;}
     };
 
     inline std::ostream &operator << (std::ostream &os, dsp_basic_block_ptr block)
@@ -111,9 +179,6 @@ namespace OpenDSP
         unsigned int          m_fixed_output_items;
         dsp_block_detail_ptr  m_detail;		// implementation details
 
-        std::vector<dsp_block_ptr> m_input_blocks;
-        std::vector<dsp_block_ptr> m_output_blocks;
-
     protected:
         dsp_block (void){} //allows pure virtual interface sub-classes
         dsp_block (const std::string &name,
@@ -128,8 +193,6 @@ namespace OpenDSP
         int  nfixedinput(){return m_fixed_input_items;}
         int  nfixedoutput(){return m_fixed_output_items;}
         bool is_fixed_rate(){return m_fixed_rate;}
-        dsp_block_ptr output_block(int which){return m_output_blocks[which];}
-        void set_output_block(int which, dsp_block_ptr block){m_output_blocks[which] = block;}
         /*!
         * \brief Tell the scheduler \p how_many_items of input stream \p which_input were consumed.
         */
@@ -186,6 +249,7 @@ namespace OpenDSP
 
         dsp_block_detail_ptr detail () const { return m_detail; }
         void set_detail (dsp_block_detail_ptr detail) { m_detail = detail; }
+        virtual void internal_work();
     };
 
     inline std::ostream &operator << (std::ostream &os, dsp_block_ptr block)
@@ -343,13 +407,12 @@ namespace OpenDSP
         dsp_switch_block (void){} //allows pure virtual interface sub-classes
         dsp_switch_block (const std::string &name, dsp_io_signature &input_signature, dsp_io_signature &output_signature);
 
-        dsp_block * m_next;
-
-        void switch_to(int which);
-
+        dsp_block_ptr m_link;
+        
     public:
         ~dsp_switch_block();
-
+        void switch_to(int from, int to);
+        void internal_work();
         virtual void reset() = 0;
         virtual dsp_block::state general_work() = 0;
     };

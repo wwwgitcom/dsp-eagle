@@ -4,74 +4,16 @@
 
 namespace OpenDSP
 {
-    /*!
-    * \brief Class representing a specific input or output graph endpoint
-    * \in group internal
-    */
-    class dsp_endpoint
-    {
-    private:
-        dsp_basic_block_ptr m_basic_block;
-        int m_port;
-
-    public:
-        dsp_endpoint() : m_basic_block(), m_port(0) { }
-        dsp_endpoint(dsp_basic_block_ptr block, int port) { m_basic_block = block; m_port = port; }
-        dsp_basic_block_ptr block() const { return m_basic_block; }
-        int port() const { return m_port; }
-
-        bool operator==(const dsp_endpoint &other) const;
-    };    
-
-    inline bool dsp_endpoint::operator==(const dsp_endpoint &other) const
-    {
-        return (m_basic_block == other.m_basic_block && 
-            m_port == other.m_port);
-    }
-
-
-    /*!
-    *\brief Class representing a connection between to graph endpoints
-    *
-    */
-    class dsp_edge
-    {
-    public:
-        dsp_edge() : m_src(), m_dst() { };
-        dsp_edge(const dsp_endpoint &src, const dsp_endpoint &dst) : m_src(src), m_dst(dst) { }
-        ~dsp_edge();
-
-        const dsp_endpoint &src() const { return m_src; }
-        const dsp_endpoint &dst() const { return m_dst; }
-
-    private:
-        dsp_endpoint m_src;
-        dsp_endpoint m_dst;
-    };
-
-    // Hold vectors of dsp_edge objects
-    typedef std::vector<dsp_edge> dsp_edge_vector_t;
-    typedef std::vector<dsp_edge>::iterator dsp_edge_viter_t;
-
-    inline std::ostream&
-        operator <<(std::ostream &os, const dsp_endpoint endp)
-    {
-        os << endp.block() << ":" << endp.port();
-        return os;
-    }
-
-    inline std::ostream&
-        operator <<(std::ostream &os, const dsp_edge edge)
-    {
-        os << edge.src() << "->" << edge.dst();
-        return os;
-    }
-
+    
     class dsp_flowgraph
     {
+    private:
+        void * m_context;
     public:
         // Destruct an arbitrary flow graph
         ~dsp_flowgraph();
+
+        void bind(void * context);
 
         void shared_connect(const dsp_endpoint &src, const dsp_vector_endpoint &dsts);
 
@@ -155,12 +97,19 @@ namespace OpenDSP
         // Wire dsp_blocks together in new flat_flowgraph
         void setup_connections();
 
+        void setup_connections2();
+
         // Merge applicable connections from existing flat flowgraph
         void merge_connections(dsp_flat_flowgraph_ptr sfg);
 
         void dump();
 
         void destroy();
+
+        void connect_c(dsp_basic_block_ptr src_block, int src_port, dsp_basic_block_ptr dst_block, int dst_port);
+        void connect_d(dsp_basic_block_ptr src_block, int src_port, dsp_basic_block_ptr dst_block, int dst_port);
+        void connect_c(const dsp_endpoint &src, const dsp_endpoint &dst);
+        void connect_d(const dsp_endpoint &src, const dsp_endpoint &dst);
 
         /*!
         * Make a vector of dsp_block from a vector of dsp_basic_block
