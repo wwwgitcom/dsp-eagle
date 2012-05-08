@@ -182,7 +182,7 @@ namespace OpenDSP
                 PLIST_ENTRY pListEntry = NULL;
 
                 do 
-                {                    
+                {
                     if (IsListEmpty(&this->m_TaskList))
                     {
                         break;

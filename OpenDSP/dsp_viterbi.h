@@ -1575,9 +1575,9 @@ namespace OpenDSP
                     TBQwit += 1;
                     TBQwit &= RQ_MASK;
                     // stage StageIndex + 1
-                    BMIndex = m_viterbi.BMAddress(pSoftBits[nSoftBits + 2], 4);
+                    BMIndex = m_viterbi.BMAddress(pSoftBits[nSoftBits + 2]);
 
-                    pvBM = &m_viterbi.m_vBM[BMIndex][0];
+                    pvBM = &m_viterbi.m_vBM0[BMIndex][0];
 
                     vBM0 = pvBM[0];
                     vBM1 = pvBM[1];

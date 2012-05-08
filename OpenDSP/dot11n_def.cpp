@@ -1843,7 +1843,7 @@ bool dot11n_phy::rx_on_frame_detection(dot11n_rx_stream& rxstream)
     signal_block* sb2;
     //m_rxstream.sbidx = 4960; // debug
     m_rx_current_sb_idx = m_rxstream.currentsbidx();
-#if 1
+#if 0
     int positivecnt = 0;
     
     static int icount = 0;
@@ -2390,7 +2390,7 @@ _work:
     siso_channel_compensate_i(&m_rx_fsamples_i[0][0], &m_rx_channel_i[0][0], &m_rx_channel_compensated_i[0][0], 64);
     siso_channel_compensate_i(&m_rx_fsamples_i[1][0], &m_rx_channel_i[1][0], &m_rx_channel_compensated_i[1][0], 64);
 #endif    
-    pilot_tracking_i(&m_rx_channel_compensated_i[0][0], 64);
+    //pilot_tracking_i(&m_rx_channel_compensated_i[0][0], 64);
 
     combine_i(&m_rx_channel_compensated_i[0][0], &m_rx_channel_compensated_i[1][0], &m_rx_channel_compensated_i[0][0]);
     
@@ -2502,7 +2502,7 @@ _work:
     siso_channel_compensate_i(&m_rx_fsamples_i[1][0], &m_rx_channel_i[1][0], &m_rx_channel_compensated_i[1][64], 64);
 #endif
 
-    pilot_tracking_i(&m_rx_channel_compensated_i[0][64], 64);
+    //pilot_tracking_i(&m_rx_channel_compensated_i[0][64], 64);
 
     combine_i(&m_rx_channel_compensated_i[0][64], &m_rx_channel_compensated_i[1][64], &m_rx_channel_compensated_i[0][64]);
 
@@ -3225,6 +3225,15 @@ _work:
         _perf_tick();
 
         stream_joiner<1>(m_rx_deinterleaved, 52, stream_joiner_buffer);
+
+#if 0
+        for (int i = 0; i < 104; i++)
+        {
+            printf("%u ", stream_joiner_buffer[i]);
+        }
+        printf("\n\n");
+        getchar();
+#endif
 
         _perf_tick();
 
