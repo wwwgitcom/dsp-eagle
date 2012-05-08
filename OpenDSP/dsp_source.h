@@ -42,7 +42,7 @@ namespace OpenDSP
             if (sbidx == sbcnt)
             {
                 sbidx = 0;
-                exit(0);// user mode only
+                //exit(0);// user mode only
             }
             return sbidx;
         }

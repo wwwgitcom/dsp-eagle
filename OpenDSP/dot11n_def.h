@@ -7,8 +7,8 @@
 #define use_fixed_point     1
 #define use_sse             1
 #define draw_enabled        0
-#define perf_enabled        1
-#define perf_unit_enabled   0
+#define perf_enabled        0
+#define perf_unit_enabled   1
 
 
 #if perf_enabled
@@ -512,6 +512,7 @@ struct dot11n_phy
     bool m_xsyncok;
 
     dsp_perf<128> m_perf;
+    dsp_perf<4> m_perf2;
 
     int m_max_cca_sbcount;
 
