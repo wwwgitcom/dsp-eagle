@@ -221,9 +221,6 @@
     <ClCompile Include="dsp_task_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dsp_viterbi_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dot11n_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

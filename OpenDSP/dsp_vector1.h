@@ -2221,7 +2221,7 @@ namespace OpenDSP
 
 
 
-#ifdef USER_MODE
+#if 0
 
     //////////////////////////////////////////////////////////////////////////
     // v_test
@@ -2290,7 +2290,7 @@ namespace OpenDSP
     {
         for (int i = 0; i < v_ub::elem_cnt; i++)
         {
-            fprintf(File, "%ud ", v[i]);
+            fprintf(File, "%u ", v[i]);
         }
         fprintf(File, "\n");
     }

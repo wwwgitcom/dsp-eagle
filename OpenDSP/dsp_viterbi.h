@@ -79,6 +79,9 @@ namespace OpenDSP
             int iTrellis;
         }input_param;
 
+
+
+
         __forceinline void viterbi12_seq(input_param& inputparm, vub *pvTrellis, char * pbInput, char * pbOutput)
         {
             int i, j;
