@@ -1843,7 +1843,7 @@ bool dot11n_phy::rx_on_frame_detection(dot11n_rx_stream& rxstream)
     signal_block* sb2;
     //m_rxstream.sbidx = 4960; // debug
     m_rx_current_sb_idx = m_rxstream.currentsbidx();
-#if 0
+#if 1
     int positivecnt = 0;
     
     static int icount = 0;
@@ -2945,7 +2945,7 @@ _work:
     siso_channel_compensate_i(&m_rx_fsamples_i[0][0], &m_rx_channel_i[0][0], &m_rx_channel_compensated_i[0][64], 64);
     //siso_channel_compensate_i(&m_rx_fsamples_i[1][0], &m_rx_channel_i[1][0], &m_rx_channel_compensated_i[1][64], 64);
 #endif
-    pilot_tracking_i(&m_rx_channel_compensated_i[0][64], 64);
+    //pilot_tracking_i(&m_rx_channel_compensated_i[0][64], 64);
 
     //////////////////////////////////////////////////////////////////////////
 #else// float point version
@@ -3421,6 +3421,17 @@ _work:
         stream_joiner_buffer = m_rx_viterbi_fifo.htvb4.Push();
         _perf_tick();
         stream_joiner<3>(m_rx_deinterleaved, 312, stream_joiner_buffer);
+
+#if 0
+        for (int i = 0; i < 624; i++)
+        {
+            //printf("%u ", stream_joiner_buffer[i]);
+            stream_joiner_buffer[i] = i % 8;
+        }
+        //printf("\n\n");
+        //getchar();
+#endif
+
         _perf_tick();
         m_rx_viterbi_fifo.htvb4.Flush();
         break;
@@ -3552,9 +3563,10 @@ void dot11n_phy::start_viterbi()
 {
     m_viterbi_stop     = false;
     m_viterbi_status   = job_waiting;
-    m_viterbi_affinity = 0x2;
+    m_viterbi_affinity = 0x4;
 
     HANDLE hViterbi = CreateThread(NULL, 0, dot11n_phy::viterbi_thread, this, 0, NULL);
+    SetThreadPriority(hViterbi, THREAD_PRIORITY_TIME_CRITICAL);
     CloseHandle(hViterbi);
 }
 
@@ -3657,18 +3669,18 @@ void dot11n_phy::viterbi_worker()
         }
         else if (m_rx_mcs == 12)
         {
-            m_rxviterbi.viterbi_blk<34, 3, 72, 72, 416, 128>(m_rx_viterbi_param, (vub*)m_rx_viterbi_trellis.vtrellis,
+            m_rxviterbi.viterbi_blk<34, 3, 72, 192, 416, 128>(m_rx_viterbi_param, (vub*)m_rx_viterbi_trellis.vtrellis,
                 m_rx_viterbi_fifo.htvb3, m_rx_decoded_frame, m_viterbi_stop, vit_call_back);
         }
         // 64-QAM
         else if (m_rx_mcs == 13)
         {
-            m_rxviterbi.viterbi_blk<23, 7, 72, 192, 624, 128>(m_rx_viterbi_param, (vub*)m_rx_viterbi_trellis.vtrellis,
+            m_rxviterbi.viterbi_blk<23, 7, 96, 256, 624, 128>(m_rx_viterbi_param, (vub*)m_rx_viterbi_trellis.vtrellis,
                 m_rx_viterbi_fifo.htvb4, m_rx_decoded_frame, m_viterbi_stop, vit_call_back);
         }
         else if (m_rx_mcs == 14)
         {
-            m_rxviterbi.viterbi_blk<34, 3, 72, 216, 624, 128>(m_rx_viterbi_param, (vub*)m_rx_viterbi_trellis.vtrellis,
+            m_rxviterbi.viterbi_blk<34, 3, 128, 256, 624, 128>(m_rx_viterbi_param, (vub*)m_rx_viterbi_trellis.vtrellis,
                 m_rx_viterbi_fifo.htvb4, m_rx_decoded_frame, m_viterbi_stop, vit_call_back);
         }
 #endif

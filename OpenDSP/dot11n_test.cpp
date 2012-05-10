@@ -31,7 +31,7 @@ void dot11n_tx_test()
 {
     dot11nphy.m_psrc    = srcbytes;
     dot11nphy.m_srcsize = testbytes;
-    dot11nphy.m_txmcs   = 13;
+    dot11nphy.m_txmcs   = 14;
     dot11n_tx_crc32.reset();
 
     for (int i = 0; i < testbytes - 4; i++)
@@ -57,9 +57,9 @@ void dot11n_tx_test()
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
     //cout << "mcs12 ";    mcs_test([&](){ dot11nphy.mcs12_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
-    cout << "mcs13 \n";    mcs_test([&](){ dot11nphy.mcs13_entry(txbuffer); });
+    //cout << "mcs13 \n";    mcs_test([&](){ dot11nphy.mcs13_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
-    //cout << "mcs14 ";    mcs_test([&](){ dot11nphy.mcs14_entry(txbuffer); });
+    cout << "mcs14 ";    mcs_test([&](){ dot11nphy.mcs14_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
 
     txbuffer.toRxDumpFile20M("mimo");
@@ -67,7 +67,7 @@ void dot11n_tx_test()
 
 void dot11n_rx_test(char** dumpfiles)
 {
-#if 0
+#if 1
     //SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
     //SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
     SetThreadAffinityMask(GetCurrentThread(), 0x1);
@@ -75,7 +75,7 @@ void dot11n_rx_test(char** dumpfiles)
 
     if (NULL == dumpfiles)
     {
-        //char* teststreams[] = {"MiMoRx_0.dmp", "MiMoRx_1.dmp"};
+        //char* teststreams[] = {"c:\\MiMoRx_0.dmp", "c:\\MiMoRx_1.dmp"};
         char* teststreams[] = {"c:\\mimo_0.dmp", "c:\\mimo_1.dmp"};
         //char* teststreams[] = {"miso2.dmp", "miso2.dmp"};
         //char* teststreams[] = {"54Mbps.dmp", "54Mbps.dmp"};

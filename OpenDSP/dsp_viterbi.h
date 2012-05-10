@@ -66,7 +66,7 @@ namespace OpenDSP
         {
             __m128i vtrellis[ SPACE_SIZE / 16 * ( nbits + ntracebackdepth + TB_PREFIX_VITAS ) ];
         };
-
+        
         typedef struct _input_param
         {
             int nTotalBits;
@@ -79,7 +79,14 @@ namespace OpenDSP
             int iTrellis;
         }input_param;
 
-
+        inline void v_print(vub &v)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                fprintf(stdout, "%u ", v[i]);
+            }
+            fprintf(stdout, "\n");
+        }
 
 
         __forceinline void viterbi12_seq(input_param& inputparm, vub *pvTrellis, char * pbInput, char * pbOutput)
@@ -336,6 +343,10 @@ namespace OpenDSP
             // temporal variables
             vub rub0, rub1, rub2, rub3;
 
+            //for (int i = 0; i < 4; i++)
+            //    v_print(pTrellis[i]);
+            //printf("\n");
+
             // Compute the new states
             rub0 = interleave_low (pTrellis[0], pTrellis[0]);
             rub1 = interleave_low (pTrellis[2], pTrellis[2]);
@@ -401,7 +412,7 @@ namespace OpenDSP
             // store the shortest path, state:[48-63]        
             pTrellis[7] = smin (rub0, rub1); 
 
-            pTrellis += 4;  
+            pTrellis += 4;
         }
 
         __forceinline void ViterbiAdvance(vub *&pTrellis, const vub pVITMA[], int i_ma)
@@ -412,6 +423,10 @@ namespace OpenDSP
 
             // Index to the Branch Metric LUT table
             i_ma <<= 3;
+
+            //for (int i = 0; i < 4; i++)
+            //    v_print(pTrellis[i]);
+            //printf("\n");
 
             // temporal variables
             vub rub0, rub1, rub2, rub3;
