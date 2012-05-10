@@ -44,19 +44,19 @@ according to DVB-T EN300744 pages 40.
 
 struct ViterbiTest 
 {
-    static const int m_nSource  = 6; // max 536870910
-    static const int m_nEncoded = m_nSource * 2;// 1/2 coding
-    //static const int m_nEncoded = m_nSource * 3 / 2;// 2/3 coding
+    static const int m_nSource  = 300; // max 536870910
+    //static const int m_nEncoded = m_nSource * 2;// 1/2 coding
+    static const int m_nEncoded = m_nSource * 3 / 2;// 2/3 coding
     //static const int m_nEncoded = m_nSource * 4 / 3;// 3/4 coding
 
-    static const int m_nMapped   = m_nEncoded * 8;//bpsk
-    static const int m_nDemapped = m_nMapped;//bpsk
+    //static const int m_nMapped   = m_nEncoded * 8;//bpsk
+    //static const int m_nDemapped = m_nMapped;//bpsk
     //static const int m_nMapped  = m_nEncoded * 4;//qpsk
     //static const int m_nMapped    = m_nEncoded * 2;//16qam
     //static const int m_nDemapped  = m_nMapped * 4;//16qam
 
-    //static const int m_nMapped    = m_nEncoded * 4 / 3;//64qam
-    //static const int m_nDemapped  = m_nMapped * 6;//64qam
+    static const int m_nMapped    = m_nEncoded * 8 / 6;//64qam
+    static const int m_nDemapped  = m_nMapped * 6;//64qam
 
     convolution::encoder_1_2 m_conv12;
     convolution::encoder_2_3 m_conv23;
@@ -74,6 +74,7 @@ struct ViterbiTest
     unsigned __int8 m_EncodedSource[m_nEncoded];
 
     unsigned __int8 m_Decoded[m_nSource + 64];
+    unsigned __int8 m_Descrambled[m_nSource];
 
     v_align(16) complexf  m_Mapped_f[m_nMapped];
     v_align(16) complex16 m_Mapped_i[m_nMapped];
@@ -100,7 +101,7 @@ struct ViterbiTest
         srand(GetTickCount());
         for (int i = 0; i < m_nSource; i++)
         {
-            m_Source[i] = rand();
+            m_Source[i] = 3;//rand();
         }
         m_Source[m_nSource - 1] = 0;
     }
@@ -298,7 +299,7 @@ struct ViterbiTest
         }
 #endif
 
-#define _CC12
+#define _CC23
 
 #ifdef _CC12
         unsigned __int16* pEncoded = (unsigned __int16*)m_EncodedSource;
@@ -505,12 +506,19 @@ struct ViterbiTest
     {
         RandomSource();
 
+        m_Source[0] = m_Source[1] = 0;
+        m_scrambler.reset(0xAB);
+        for (int i = 0; i < m_nSource; i++)
+        {
+            m_scrambler(m_Source[i], m_ScrambledSource[i]);
+        }
+
         unsigned __int8* pEncoded = m_EncodedSource;
         // conv encode
         m_conv23.reset(0);        
         for (int i = 0; i < m_nSource; i += 2)
         {
-            m_conv23(&m_Source[i], pEncoded);
+            m_conv23(&m_ScrambledSource[i], pEncoded);
             pEncoded += 3;
         }
 
@@ -575,7 +583,7 @@ Data rate(Mbits/s) Modulation Coding rate(R) Coded bits per subcarrier(NBPSC) Co
 
 ViterbiTest vt;
 
-dsp_viterbi_64<48, 48> dv;
+dsp_viterbi_64<36, 48> dv;
 
 int viterbi_check()
 {
@@ -603,12 +611,19 @@ int viterbi_test(float EbN0)
     //dv.UnitTest2();
     //return 1;
 
-#if 0
+#if 1
     //vt.Run(EbN0);
-    vt.Run_Test1(EbN0);
+    vt.Run_Test7(EbN0);
     dv.Run1();
 
-    double fber = dsp_ber::ber(vt.m_Source, vt.m_Decoded, vt.m_nSource - 16);
+    vt.m_scrambler.reset(vt.m_Decoded[1]);
+    for (int i = 2; i < vt.m_nSource; i++)
+    {
+        vt.m_Descrambled[i] = vt.m_scrambler(vt.m_Decoded[i]);
+    }
+    
+
+    double fber = dsp_ber::ber(vt.m_Source, vt.m_Descrambled, vt.m_nSource - 16);
 
     SumBer += fber;
     printf("BER: %f : %f\n", EbN0, SumBer);

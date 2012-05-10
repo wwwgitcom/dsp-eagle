@@ -79,7 +79,9 @@ namespace OpenDSP
             int iTrellis;
         }input_param;
 
-#if 1
+<<<<<<< HEAD
+
+=======
         inline void v_print(vub &v)
         {
             for (int i = 0; i < 16; i++)
@@ -88,9 +90,7 @@ namespace OpenDSP
             }
             fprintf(stdout, "\n");
         }
-#else
-        inline void v_print(vub &v){}
-#endif
+>>>>>>> db5ef456e691727fd78aa5fc896ec03e0760e603
 
 
         __forceinline void viterbi12_seq(input_param& inputparm, vub *pvTrellis, char * pbInput, char * pbOutput)
@@ -349,7 +349,7 @@ namespace OpenDSP
 
             //for (int i = 0; i < 4; i++)
             //    v_print(pTrellis[i]);
-            printf("\n");
+            //printf("\n");
 
             // Compute the new states
             rub0 = interleave_low (pTrellis[0], pTrellis[0]);
@@ -367,7 +367,6 @@ namespace OpenDSP
 
             // store the shortest path, state:[0-15]
             pTrellis[4] = smin (rub0, rub1); 
-            v_print(shift_right(pTrellis[4], 1));
 
             rub0 = interleave_high (pTrellis[0], pTrellis[0]);
             rub1 = interleave_high (pTrellis[2], pTrellis[2]);
@@ -384,7 +383,6 @@ namespace OpenDSP
 
             // store the shortest path, state:[16-31]    
             pTrellis[5] = smin (rub0, rub1); 
-            v_print(shift_right(pTrellis[5], 1));
 
             rub0 = interleave_low (pTrellis[1], pTrellis[1]);
             rub1 = interleave_low (pTrellis[3], pTrellis[3]);
@@ -401,7 +399,6 @@ namespace OpenDSP
 
             // store the shortest path, state:[32-47]    
             pTrellis[6] = smin (rub0, rub1);
-            v_print(shift_right(pTrellis[6], 1));
 
             rub0 = interleave_high (pTrellis[1], pTrellis[1]);
             rub1 = interleave_high (pTrellis[3], pTrellis[3]);
@@ -418,7 +415,6 @@ namespace OpenDSP
 
             // store the shortest path, state:[48-63]        
             pTrellis[7] = smin (rub0, rub1); 
-            v_print(shift_right(pTrellis[7], 1));
 
             pTrellis += 4;
         }
@@ -434,7 +430,7 @@ namespace OpenDSP
 
             //for (int i = 0; i < 4; i++)
             //    v_print(pTrellis[i]);
-            printf("\n");
+            //printf("\n");
 
             // temporal variables
             vub rub0, rub1, rub2, rub3;
@@ -453,7 +449,6 @@ namespace OpenDSP
 
             // store the shortest path, state:[0-15]
             pTrellis[4] = smin (rub0, rub1); 
-            v_print(shift_right(pTrellis[4], 1));
 
             rub0 = interleave_high (pTrellis[0], pTrellis[0]);
             rub1 = interleave_high (pTrellis[2], pTrellis[2]);
@@ -468,7 +463,6 @@ namespace OpenDSP
 
             // store the shortest path, state:[16-31]    
             pTrellis[5] = smin (rub0, rub1); 
-            v_print(shift_right(pTrellis[5], 1));
 
             rub0 = interleave_low (pTrellis[1], pTrellis[1]);
             rub1 = interleave_low (pTrellis[3], pTrellis[3]);
@@ -483,7 +477,6 @@ namespace OpenDSP
 
             // store the shortest path, state:[32-47]    
             pTrellis[6] = smin (rub0, rub1); 
-            v_print(shift_right(pTrellis[6], 1));
 
             rub0 = interleave_high (pTrellis[1], pTrellis[1]);
             rub1 = interleave_high (pTrellis[3], pTrellis[3]);
@@ -498,7 +491,6 @@ namespace OpenDSP
 
             // store the shortest path, state:[48-63] 
             pTrellis[7] = smin (rub0, rub1);
-            v_print(shift_right(pTrellis[7], 1));
 
             pTrellis += 4;
         }
@@ -517,8 +509,6 @@ namespace OpenDSP
 
             char* blkCurrent;
             char * blkInput = blkStart;
-
-            vub* pTrellisBase = pTrellis;
             
             int i, j;
 
@@ -598,7 +588,6 @@ namespace OpenDSP
                 // Dump trellis
                 //DUMP_TRELLIS (pTrellis);
                 // Normalize
-#if 0
                 if ((i_trellis & NOR_MASK_) == 0 )
                 {
                     // normalization
@@ -618,20 +607,6 @@ namespace OpenDSP
                     pTrellis[2] = sub ( pTrellis[2], rub3);
                     pTrellis[3] = sub ( pTrellis[3], rub3);
                 }
-#else
-                if (pTrellis[0][0] > 192)
-                {
-                    vub vnorm;
-                    for (int i = 0; i < 16; i++)
-                    {
-                        vnorm[i] = 128;
-                    }
-                    pTrellis[0] = sub ( pTrellis[0], vnorm);
-                    pTrellis[1] = sub ( pTrellis[1], vnorm);
-                    pTrellis[2] = sub ( pTrellis[2], vnorm);
-                    pTrellis[3] = sub ( pTrellis[3], vnorm);
-                }
-#endif
 
                 // here I need also check if we need to load a new descriptor
                 //if (NeedNewDescriptor<mbitrate>(i_trellis))
@@ -670,9 +645,8 @@ namespace OpenDSP
                     // track back
                     // we need to find the minimal state and index of the state
 
-                    printf("traceback...@%d\n", i_trellis);
                     // do normalization first
-#if 0
+
                     rub0 = smin (pTrellis[0], pTrellis[1] );
                     rub1 = smin (pTrellis[2], pTrellis[3] );
                     rub2 = smin (rub0, rub1);
@@ -685,7 +659,7 @@ namespace OpenDSP
                     pTrellis[1] = sub ( pTrellis[1], rub3);
                     pTrellis[2] = sub ( pTrellis[2], rub3);
                     pTrellis[3] = sub ( pTrellis[3], rub3);
-#endif
+
                     // rub3 has the minimal value, we need to find the index
                     // the algorithm to find the right index is to embed the index at the least
                     // significant bits of state value, then we just find the minimal value
@@ -765,12 +739,6 @@ namespace OpenDSP
 
                         outchar = 0;
                     }
-
-                    for (int i = 0; i < (TB_OUTPUT_ >> 3); i++)
-                    {
-                        printf("%02X ", pVTOutput[i]);
-                    }
-                    printf("\n");
 
                     // yield
                     fcb(pVTOutput, (TB_OUTPUT_ >> 3));
@@ -1052,7 +1020,7 @@ namespace OpenDSP
                 m_vStateIndex[0][i] = v++;
             }
 
-            m_vNormMask.v_setall(128);
+            m_vNormMask.v_setall(255 - 100);
 
             
             unsigned __int8 bAddress;
@@ -2224,7 +2192,7 @@ namespace OpenDSP
 
                     //m_viterbi.v_print(vStates, 4);
 
-                    if (vStates[0].v_get_at<0>() > 192)
+                    if (vStates[0].v_get_at<0>() > 208)
                     {
                         //m_viterbi.v_print(vStates, 4);
                         m_viterbi.Normalize(vStates);
@@ -2546,8 +2514,8 @@ namespace OpenDSP
 
             dsp_task::task* execute()
             {
-                //execute_1_2();
-                execute_2_3();
+                execute_1_2();
+                //execute_2_3();
                 //execute_3_4();
 
                 return this;

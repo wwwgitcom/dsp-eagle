@@ -177,6 +177,7 @@
     <ClCompile Include="dsp_task.cpp" />
     <ClCompile Include="dsp_vector1.cpp" />
     <ClCompile Include="dsp_viterbi.cpp" />
+    <ClCompile Include="dsp_viterbi_test.cpp" />
     <ClCompile Include="OpenDSP.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

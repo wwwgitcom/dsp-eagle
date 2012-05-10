@@ -61,10 +61,14 @@ BOOL WINAPI HandlerRoutine(__in  DWORD dwCtrlType)
 
 int viterbi_check();
 
+int viterbi_test(float EbN0);
+
 int _tmain(int argc, _TCHAR* argv[])
 {
     //OpenDSP::global_init();
     
+    //viterbi_test(1.0);
+
     dsp_testunit(argc, argv);
 
     //viterbi_check();

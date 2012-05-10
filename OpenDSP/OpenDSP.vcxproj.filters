@@ -269,5 +269,8 @@
     <ClCompile Include="dsp_dot11a_2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dsp_viterbi_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
