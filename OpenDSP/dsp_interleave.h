@@ -211,7 +211,7 @@ namespace OpenDSP
 
             void zero_lookuptable_padding()
             {
-                memset(lookuptable, 0, padding_bound * voutbuffer_size * v_ub::size);
+                memset(lookuptable_padding, 0, padding_bound * voutbuffer_size * v_ub::size);
             }
 
             void create_lookuptable_padding(int iss)

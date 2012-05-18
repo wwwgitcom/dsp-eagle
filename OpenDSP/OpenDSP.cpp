@@ -69,8 +69,6 @@ int _tmain(int argc, _TCHAR* argv[])
     
     //viterbi_test(1.0);
 
-    dsp_testunit(argc, argv);
-
     //viterbi_check();
 
 

@@ -79,7 +79,7 @@ namespace OpenDSP
             int iTrellis;
         }input_param;
 
-#if 1
+#if 0
         inline void v_print(vub &v)
         {
             for (int i = 0; i < 16; i++)
@@ -349,7 +349,7 @@ namespace OpenDSP
 
             //for (int i = 0; i < 4; i++)
             //    v_print(pTrellis[i]);
-            printf("\n");
+            //printf("\n");
 
             // Compute the new states
             rub0 = interleave_low (pTrellis[0], pTrellis[0]);
@@ -434,7 +434,7 @@ namespace OpenDSP
 
             //for (int i = 0; i < 4; i++)
             //    v_print(pTrellis[i]);
-            printf("\n");
+            //printf("\n");
 
             // temporal variables
             vub rub0, rub1, rub2, rub3;
@@ -670,7 +670,7 @@ namespace OpenDSP
                     // track back
                     // we need to find the minimal state and index of the state
 
-                    printf("traceback...@%d\n", i_trellis);
+                    //printf("traceback...@%d\n", i_trellis);
                     // do normalization first
 #if 0
                     rub0 = smin (pTrellis[0], pTrellis[1] );
@@ -765,12 +765,13 @@ namespace OpenDSP
 
                         outchar = 0;
                     }
-
+#if 0
                     for (int i = 0; i < (TB_OUTPUT_ >> 3); i++)
                     {
                         printf("%02X ", pVTOutput[i]);
                     }
                     printf("\n");
+#endif
 
                     // yield
                     fcb(pVTOutput, (TB_OUTPUT_ >> 3));

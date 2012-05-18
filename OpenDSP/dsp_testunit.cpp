@@ -41,7 +41,7 @@ int dsp_testunit(int argc, _TCHAR* argv[])
     return 0;
 #endif
 
-#if 0
+#if 1
     dot11n_tx_test();
 #else
     if (argc < 3)
