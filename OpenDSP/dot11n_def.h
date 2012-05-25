@@ -324,6 +324,8 @@ struct dot11n_phy
     template<typename T>
     __forceinline void FlushNT(T& symbol1, T& symbol2, dot11n_tx_buffer& txbuffer)
     {
+        static int icount = 0;
+
         int i = 0, j = txbuffer.iPos;
         for (; i < symbol1.vntotal; i++, j += 2)
         {
@@ -331,6 +333,13 @@ struct dot11n_phy
             symbol2.vdata[i].v_storent(&txbuffer.vsamples[j + 1]);
         }
         txbuffer.iPos = j;
+#if 0
+        for (int k = 0; k < symbol1.ntotal; k++)
+        {
+            printf("%d, %d     %d, %d\n", symbol1.data[k].re, symbol1.data[k].im, 
+                symbol2.data[k].re, symbol2.data[k].im);
+        }
+#endif
     }
 
     fft_i<64>  m_fft;
@@ -473,10 +482,10 @@ struct dot11n_phy
     void flush_symbol(dot11n_tx_buffer& tx_buffer)
     {
         tempsymbol[0].copycp();
-        make_window(tempsymbol[0], m_cwindow1);
+        //make_window(tempsymbol[0], m_cwindow1);
         tempsymbol[1].csd(tempsymbol[2], 4);
         tempsymbol[2].copycp();
-        make_window(tempsymbol[2], m_cwindow2);
+        //make_window(tempsymbol[2], m_cwindow2);
         FlushNT(tempsymbol[0], tempsymbol[2], tx_buffer);
     }
 
@@ -506,7 +515,7 @@ struct dot11n_phy
     dsp_acorr_f           m_autocorr_f;
     dsp_xcorr             m_xcorr;
     dsp_freq              m_freq;
-    int  m_rx_current_sb_idx;
+    int  m_rx_current_sb_idx;    
     int  m_currentvindex;
     bool m_asyncok;
     bool m_xsyncok;
@@ -1971,6 +1980,7 @@ struct dot11n_phy
 
     int m_rx_sample_idx;
     int m_rx_symbol_count;
+    int m_total_symbol_count;
 
     void rx_scheduler();
 

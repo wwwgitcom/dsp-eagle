@@ -31,7 +31,7 @@ void dot11n_tx_test()
 {
     dot11nphy.m_psrc    = srcbytes;
     dot11nphy.m_srcsize = testbytes;
-    dot11nphy.m_txmcs   = 8;
+    dot11nphy.m_txmcs   = 12;
     dot11n_tx_crc32.reset();
 
     for (int i = 0; i < testbytes - 4; i++)
@@ -47,7 +47,7 @@ void dot11n_tx_test()
         srcbytes[i] = 0;
     }
 
-    cout << "mcs8  \n";    mcs_test([&](){ dot11nphy.mcs8_entry(txbuffer); });
+    //cout << "mcs8  \n";    mcs_test([&](){ dot11nphy.mcs8_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
     //cout << "mcs9  \n";    mcs_test([&](){ dot11nphy.mcs9_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
@@ -55,7 +55,7 @@ void dot11n_tx_test()
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
     //cout << "mcs11 ";    mcs_test([&](){ dot11nphy.mcs11_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
-    //cout << "mcs12 ";    mcs_test([&](){ dot11nphy.mcs12_entry(txbuffer); });
+    cout << "mcs12 ";    mcs_test([&](){ dot11nphy.mcs12_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
     //cout << "mcs13 \n";    mcs_test([&](){ dot11nphy.mcs13_entry(txbuffer); });
     //cout << dot11nphy.m_symbolcount << " symbols" << endl;
