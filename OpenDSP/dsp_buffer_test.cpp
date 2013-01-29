@@ -436,8 +436,8 @@ static void memory_test()
 
     printf("%p %p %p\n", p, p + pagesize, p + 2 * pagesize);
 
-    ULONG nPages = 16;
-    ULONG* UserPfnArray = new ULONG[nPages];
+    ULONG_PTR nPages = 16;
+    PULONG_PTR UserPfnArray = new ULONG_PTR[nPages];
 
     BOOL bRet = AllocateUserPhysicalPages(GetCurrentProcess(), &nPages, UserPfnArray);
     

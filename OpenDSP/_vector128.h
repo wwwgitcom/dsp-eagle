@@ -53,7 +53,7 @@ extern "C" extern __m128i _mm_max_epu32(__m128i val1, __m128i val2);
 extern "C" extern int _mm_extract_epi8 (__m128i src, const int ndx);
 extern "C" extern int _mm_extract_epi32(__m128i src, const int ndx);
 #if defined(_M_X64)
-extern __int64 _mm_extract_epi64(__m128i src, const int ndx);
+//extern __int64 _mm_extract_epi64(__m128i src, const int ndx);
 #endif
 
 
@@ -570,7 +570,7 @@ DSP_INLINE void set_all(vq& x, __int64 a)
 {
 #if (SIZE_MAX == _UI64_MAX)
     // _mm_set1_epi64x only available on AMD64 platform
-    x = (vq)_mm_set1_epi64x(a);
+    //x = (vq)_mm_set1_epi64x(a);
 #elif (SIZE_MAX == _UI32_MAX)
     // __m64 and _mm_set1_epi64 only available on IX86 platform
     __m64 t;

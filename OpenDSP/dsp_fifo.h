@@ -98,6 +98,7 @@ namespace OpenDSP
         RingQ()
         {
             m_wcount = m_rcount = 0;
+            memset(m_Data, 0, sizeof(_ElemType) * _ElemCount);
         }
 
         void Clear()

@@ -14,6 +14,7 @@ namespace OpenDSP
             {
                 v = pA[i] ^ pB[i];
                 TotalCount += BitsSetTable256[v];
+                //printf("a=%02X, b=%02X, c=%02X, n=%d\n", pA[i], pB[i], v, TotalCount);
             }
 
             return (double)TotalCount / ((double)N * 8.0f);

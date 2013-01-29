@@ -3022,7 +3022,7 @@ _work:
             {
                 break;
             }
-            __asm pause;
+            _mm_pause();
         }
 
 #if 0
@@ -3539,7 +3539,7 @@ _work:
             {
                 break;
             }
-            __asm pause;
+            _mm_pause();
         }
 #if 0
         for (int i = 0; i < m_rx_frame_length; i++)

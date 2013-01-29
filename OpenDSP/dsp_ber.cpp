@@ -1,4 +1,6 @@
+#include "stdafx.h"
 #include "dsp_ber.h"
+
 
 namespace OpenDSP
 {
