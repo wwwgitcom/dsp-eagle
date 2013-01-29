@@ -115,12 +115,12 @@ namespace OpenDSP
             }
 
 
-            void pass_channel(complex16* psignal, int signallength, float norm_one, float EsN0)
+            void pass_channel(complex16* psignal, size_t signallength, float norm_one, float EsN0)
             {
                 float sigma;
                 sigma = sqrt(0.5f * pow(10.0f, -0.1f * EsN0));
 
-                for (int i = 0; i < signallength; i++)
+                for (size_t i = 0; i < signallength; i++)
                 {
                     float noisere = norm_one * sigma * gasdev(&idum);
                     float noiseim = norm_one * sigma * gasdev(&idum);
@@ -130,14 +130,14 @@ namespace OpenDSP
                 }
             }
 
-            void pass_channel(complexf* psignal, int signallength, float EsN0)
+            void pass_channel(complexf* psignal, size_t signallength, float EsN0)
             {
                 //float sigma = pow(10.0f, -1.0f * EsN0 / 20.0f);
                 //sigma *= sqrt(0.5f);
 
                 float sigma = sqrt(0.5f * pow(10.0f, -0.1f * EsN0));
 
-                for (int i = 0; i < signallength; i++)
+                for (size_t i = 0; i < signallength; i++)
                 {
                     float noisere = sigma * gasdev(&idum);
                     float noiseim = sigma * gasdev(&idum);

@@ -18,7 +18,7 @@ namespace OpenDSP
         dsp_draw_window * pWnd;
         if ( uMsg == WM_NCCREATE ) 
         {
-            SetWindowLong ( hWnd, GWL_USERDATA, (long) ((LPCREATESTRUCT(lParam))->lpCreateParams));
+            SetWindowLong ( hWnd, GWLP_USERDATA, (long) ((LPCREATESTRUCT(lParam))->lpCreateParams));
         }
 
         pWnd = GetThisFromWindow ( hWnd );
@@ -34,7 +34,7 @@ namespace OpenDSP
 
     dsp_draw_window* dsp_draw_window::GetThisFromWindow(HWND hWnd)
     {
-        return (dsp_draw_window *)GetWindowLong(hWnd, GWL_USERDATA);
+        return (dsp_draw_window *)GetWindowLong(hWnd, GWLP_USERDATA);
     }
 
     DWORD WINAPI dsp_draw_window::msg_dispatch_thread(LPVOID lpdwThreadParam)
