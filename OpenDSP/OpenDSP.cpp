@@ -10,31 +10,6 @@ namespace OpenDSP
 extern void global_init();
 }
 
-class CBase
-{
-public:
-    virtual __forceinline void work()
-    {
-        cout << GetCurrentThreadId() << " ºº×Ö" << endl;
-    }
-    
-protected:
-private:
-};
-
-class CDerived : public CBase
-{
-public:
-    __forceinline void work0()
-    {
-        cout << GetCurrentThreadId() << " ×ÓÀàºº×Ö" << endl;
-        CBase::work();
-    }
-
-protected:
-private:
-};
-
 
 //////////////////////////////////////////////////////////////////////////
 
