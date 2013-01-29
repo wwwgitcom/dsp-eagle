@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C42E391A-FBCA-4C5C-96EF-CE22DF29048A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>OpenDSP</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v110</PlatformToolset>
+<<<<<<< HEAD
+=======
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v110</PlatformToolset>
+>>>>>>> 461cc59f0b22e887c1724b6a0ac8323b1a0fb721
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+<<<<<<< HEAD
+=======
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+>>>>>>> 461cc59f0b22e887c1724b6a0ac8323b1a0fb721
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>.\3rdpart\fftw\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>.\3rdpart\fftw\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>.\3rdpart\fftw\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>.\3rdpart\fftw\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>.\3rdpart\fftw\libfftw3f-3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>.\3rdpart\fftw\libfftw3f-3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>false</ExceptionHandling>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <MinimalRebuild>true</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>.\3rdpart\fftw\libfftw3f-3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>false</ExceptionHandling>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>.\3rdpart\fftw\libfftw3f-3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3rdpart\fftw\fftw3.h" />
+    <ClInclude Include="dot11n_def.h" />
+    <ClInclude Include="dot11n_plcp.h" />
+    <ClInclude Include="dsp_acorr.h" />
+    <ClInclude Include="dsp_bb_dot11a.h" />
+    <ClInclude Include="dsp_bb_dot11a_scheduler.h" />
+    <ClInclude Include="dsp_ber.h" />
+    <ClInclude Include="dsp_block.h" />
+    <ClInclude Include="dsp_buffer.h" />
+    <ClInclude Include="dsp_channel.h" />
+    <ClInclude Include="dsp_complex.h" />
+    <ClInclude Include="dsp_crc.h" />
+    <ClInclude Include="dsp_dot11a_2.h" />
+    <ClInclude Include="dsp_draw.h" />
+    <ClInclude Include="dsp_encode.h" />
+    <ClInclude Include="dsp_fifo.h" />
+    <ClInclude Include="dsp_file_source.h" />
+    <ClInclude Include="dsp_flowgraph.h" />
+    <ClInclude Include="dsp_freqest.h" />
+    <ClInclude Include="dsp_helper.h" />
+    <ClInclude Include="dsp_interleave.h" />
+    <ClInclude Include="dsp_iterator.h" />
+    <ClInclude Include="dsp_log.h" />
+    <ClInclude Include="dsp_mapper.h" />
+    <ClInclude Include="dsp_math.h" />
+    <ClInclude Include="dsp_memory.h" />
+    <ClInclude Include="dsp_ofdm.h" />
+    <ClInclude Include="dsp_perf.h" />
+    <ClInclude Include="dsp_pipeline.h" />
+    <ClInclude Include="dsp_plot.h" />
+    <ClInclude Include="dsp_scheduler.h" />
+    <ClInclude Include="dsp_scope_sink.h" />
+    <ClInclude Include="dsp_scramble.h" />
+    <ClInclude Include="dsp_signalblock.h" />
+    <ClInclude Include="dsp_source.h" />
+    <ClInclude Include="dsp_sysconfig.h" />
+    <ClInclude Include="dsp_task.h" />
+    <ClInclude Include="dsp_tickcount.h" />
+    <ClInclude Include="dsp_types.h" />
+    <ClInclude Include="dsp_vector.h" />
+    <ClInclude Include="dsp_vector1.h" />
+    <ClInclude Include="dsp_fft.h" />
+    <ClInclude Include="dsp_viterbi.h" />
+    <ClInclude Include="simplewnd.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="_vector128.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dot11n_def.cpp" />
+    <ClCompile Include="dot11n_plcp.cpp" />
+    <ClCompile Include="dot11n_test.cpp" />
+    <ClCompile Include="dsp_bb_dot11a.cpp" />
+    <ClCompile Include="dsp_bb_dot11a_scheduler.cpp" />
+    <ClCompile Include="dsp_bb_dot11a_test.cpp" />
+    <ClCompile Include="dsp_block.cpp" />
+    <ClCompile Include="dsp_block_test.cpp" />
+    <ClCompile Include="dsp_buffer.cpp" />
+    <ClCompile Include="dsp_buffer_test.cpp" />
+    <ClCompile Include="dsp_dot11a_2.cpp" />
+    <ClCompile Include="dsp_file_source.cpp" />
+    <ClCompile Include="dsp_flowgraph.cpp" />
+    <ClCompile Include="dsp_flowgraph_test.cpp" />
+    <ClCompile Include="dsp_global.cpp" />
+    <ClCompile Include="dsp_log.cpp" />
+    <ClCompile Include="dsp_pipeline.cpp" />
+    <ClCompile Include="dsp_scheduler.cpp" />
+    <ClCompile Include="dsp_scope_sink.cpp" />
+    <ClCompile Include="dsp_section.cpp" />
+    <ClCompile Include="dsp_sysconfig.cpp" />
+    <ClCompile Include="dsp_task_test.cpp" />
+    <ClCompile Include="dsp_testunit.cpp" />
+    <ClCompile Include="dsp_ber.cpp" />
+    <ClCompile Include="dsp_crc.cpp" />
+    <ClCompile Include="dsp_draw.cpp" />
+    <ClCompile Include="dsp_encode.cpp" />
+    <ClCompile Include="dsp_mapper.cpp" />
+    <ClCompile Include="dsp_math.cpp" />
+    <ClCompile Include="dsp_plot.cpp" />
+    <ClCompile Include="dsp_scramble.cpp" />
+    <ClCompile Include="dsp_task.cpp" />
+    <ClCompile Include="dsp_vector1.cpp" />
+    <ClCompile Include="dsp_viterbi.cpp" />
+    <ClCompile Include="dsp_viterbi_test.cpp" />
+    <ClCompile Include="OpenDSP.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -10,6 +10,34 @@ namespace OpenDSP
   extern void global_init();
 }
 
+<<<<<<< HEAD
+=======
+class CBase
+{
+public:
+  virtual __forceinline void work()
+  {
+    cout << GetCurrentThreadId() << " ºº×Ö" << endl;
+  }
+
+protected:
+private:
+};
+
+class CDerived : public CBase
+{
+public:
+  __forceinline void work0()
+  {
+    cout << GetCurrentThreadId() << " ×ÓÀàºº×Ö" << endl;
+    CBase::work();
+  }
+
+protected:
+private:
+};
+
+>>>>>>> 461cc59f0b22e887c1724b6a0ac8323b1a0fb721
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -40,18 +68,18 @@ int viterbi_test(float EbN0);
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-  OpenDSP::global_init();
+  //OpenDSP::global_init();
 
-  //if (argc == 2)
-  //{
-  //  viterbi_test(atof(argv[1]));
-  //}
-  //else
-  //{
-  //  viterbi_test(10.0f);
-  //}
-  //
-  //return 1;
+  if (argc == 2)
+  {
+    viterbi_test(atof(argv[1]));
+  }
+  else
+  {
+    viterbi_test(10.0f);
+  }
+  
+  return 1;
 
   //viterbi_check();
 

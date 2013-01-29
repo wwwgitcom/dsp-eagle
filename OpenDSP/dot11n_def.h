@@ -8,7 +8,7 @@
 #define use_sse             1
 #define draw_enabled        0
 #define perf_enabled        0
-#define perf_unit_enabled   1
+#define perf_unit_enabled   0
 
 
 #if perf_enabled
