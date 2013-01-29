@@ -598,7 +598,7 @@ namespace OpenDSP
                 // Dump trellis
                 //DUMP_TRELLIS (pTrellis);
                 // Normalize
-#if 0
+#if 1
                 if ((i_trellis & NOR_MASK_) == 0 )
                 {
                     // normalization
@@ -672,7 +672,7 @@ namespace OpenDSP
 
                     //printf("traceback...@%d\n", i_trellis);
                     // do normalization first
-#if 0
+#if 1
                     rub0 = smin (pTrellis[0], pTrellis[1] );
                     rub1 = smin (pTrellis[2], pTrellis[3] );
                     rub2 = smin (rub0, rub1);

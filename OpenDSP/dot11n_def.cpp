@@ -1820,7 +1820,7 @@ void dot11n_phy::rx_scheduler()
             tduration = tend - tstart;
 
             printf("[Perf][HTDATA] %d -> %d, time = %.3f us, rate = %.3f MSPS\n",
-                beginsbidx, endsbidx, tduration.us(), (endsbidx - beginsbidx) * 28 / tduration.us());
+                beginsbidx, endsbidx, tduration.us(), m_total_symbol_count * 80 / tduration.us());
 #endif
             _perf_report();
 
@@ -2559,6 +2559,7 @@ _work:
 
     //printf("mcs=%d, length=%d, ht_symbol_count=%d\n", m_rx_mcs, m_rx_frame_length, m_rx_symbol_count);
 
+    m_total_symbol_count = m_rx_symbol_count;
     m_rx_viterbi_symbol_count = m_rx_symbol_count;
 
     switch (m_rx_mcs)
@@ -3566,7 +3567,7 @@ void dot11n_phy::start_viterbi()
     m_viterbi_affinity = 0x4;
 
     HANDLE hViterbi = CreateThread(NULL, 0, dot11n_phy::viterbi_thread, this, 0, NULL);
-    SetThreadPriority(hViterbi, THREAD_PRIORITY_TIME_CRITICAL);
+    //SetThreadPriority(hViterbi, THREAD_PRIORITY_TIME_CRITICAL);
     CloseHandle(hViterbi);
 }
 
@@ -3680,7 +3681,7 @@ void dot11n_phy::viterbi_worker()
         }
         else if (m_rx_mcs == 14)
         {
-            m_rxviterbi.viterbi_blk<34, 3, 128, 256, 624, 128>(m_rx_viterbi_param, (vub*)m_rx_viterbi_trellis.vtrellis,
+            m_rxviterbi.viterbi_blk<34, 3, 72, 216, 624, 128>(m_rx_viterbi_param, (vub*)m_rx_viterbi_trellis.vtrellis,
                 m_rx_viterbi_fifo.htvb4, m_rx_decoded_frame, m_viterbi_stop, vit_call_back);
         }
 #endif
