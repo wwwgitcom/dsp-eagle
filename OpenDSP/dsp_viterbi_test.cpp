@@ -40,7 +40,7 @@ int soft_demap(complexf *in_ary, unsigned char *soft_ary, int len)
 #define mod_64qam 4
 
 #define cc_now cc_34
-#define mod_now mod_64qam
+#define mod_now mod_bpsk
 
 /************************************************************************/
 /* Viterbi Template for (2, 1, 7)                                       */
@@ -72,13 +72,14 @@ struct dsp_viterbi_64
   __int32          m_nDecodedBytes;
 
   // shared
-#define RQ_MASK (1024 - 1)
+#define TBQLen (1 << 16)
+#define RQ_MASK (TBQLen - 1)
   typedef v_ub TBState[4];
   typedef unsigned __int16 SurviorPath[4];
-  typedef RingQ<SurviorPath, unsigned __int16, 1024> VitRQ;
+  typedef RingQ<SurviorPath, unsigned __int16, TBQLen> VitRQ;
 
   v_align(64) VitRQ     m_TBQ;
-  v_align(64) TBState   m_MinAddress[1024];
+  v_align(64) TBState   m_MinAddress[TBQLen];
 
   // TB
   v_align(64) v_ub      m_vStateIndex[4];
@@ -766,7 +767,7 @@ struct dsp_viterbi_64
 
         //m_viterbi.v_print(vStates, 4);
 
-        if (vStates[0].v_get_at<0>() > 170)
+        //if (vStates[0].v_get_at<0>() > 170)
         {
           //m_viterbi.v_print(vStates, 1);
           m_viterbi.Normalize(vStates);
@@ -999,7 +1000,7 @@ struct dsp_viterbi_64
 
         //m_viterbi.v_print(vStates, 4);
 
-        if (vStates[0].v_get_at<0>() > 170)
+        //if (vStates[0].v_get_at<0>() > 170)
         {
           //m_viterbi.v_print(vStates, 1);
           m_viterbi.Normalize(vStates);
@@ -1079,7 +1080,7 @@ struct dsp_viterbi_64
 
     dsp_task::task* execute()
     {
-
+      printf("viterbi execute.......\n");
 #if cc_now == cc_12
       execute_1_2();
 #elif cc_now == cc_23
@@ -1120,7 +1121,7 @@ struct dsp_viterbi_64
 
       for (int i = 0; i < 4; i++)
       {
-        vStates[i].v_setall(80);
+        vStates[i].v_setall(48);
       }
       vStates[0].v_set_at<0>(0);
 
@@ -1266,7 +1267,7 @@ struct dsp_viterbi_64
 
       tend = tick_count::now();
       tduration = tend - tbegin;
-      printf("ACSThread: %f us, %f Mbps\n", tduration.us(), m_viterbi.m_nDecodedBytes * 8 / tduration.us());
+      //printf("ACSThread: %f us, %f Mbps\n", tduration.us(), m_viterbi.m_nDecodedBytes * 8 / tduration.us());
     }
 
     void execute_2_3()
@@ -1284,7 +1285,7 @@ struct dsp_viterbi_64
       vNormMask.v_setall(80);
       for (int i = 0; i < 4; i++)
       {
-        vStates[i].v_setall(42);
+        vStates[i].v_setall(80);
       }
       vStates[0].v_set_at<0>(0);
 
@@ -1328,9 +1329,8 @@ struct dsp_viterbi_64
 
         // stage StageIndex + 1
         BMIndex = m_viterbi.BMAddress(pSoftBits[nSoftBits + 2]);
-
         pvBM = &m_viterbi.m_vBM0[BMIndex][0];
-
+        
         vBM0 = pvBM[0];
         vBM1 = pvBM[1];
         m_viterbi.ButterFly(vStates[0], vStates[2], vShuffleMask, vBM0, vBM1, iPH0, iPH1);
@@ -1424,7 +1424,7 @@ struct dsp_viterbi_64
 
       tend = tick_count::now();
       tduration = tend - tbegin;
-      printf("ACSThread: %f us, %f Mbps\n", tduration.us(), m_viterbi.m_nDecodedBytes * 8 / tduration.us());
+      //printf("ACSThread: %f us, %f Mbps\n", tduration.us(), m_viterbi.m_nDecodedBytes * 8 / tduration.us());
     }
 
     void execute_3_4()
@@ -1442,7 +1442,7 @@ struct dsp_viterbi_64
       vNormMask.v_setall(80);
       for (int i = 0; i < 4; i++)
       {
-        vStates[i].v_setall(50);
+        vStates[i].v_setall(48);
       }
       vStates[0].v_set_at<0>(0);
 
@@ -1507,6 +1507,8 @@ struct dsp_viterbi_64
 
         TBQwit   += 1;
         TBQwit   &= RQ_MASK;
+
+
 
         //m_viterbi.v_print(vStates, 4);
 
@@ -1605,7 +1607,7 @@ struct dsp_viterbi_64
 
         //m_viterbi.v_print(vStates, 4);
 
-        if (vStates[0][0] > 200)
+        //if (vStates[0][0] > 200)
         //if (nSoftBits % 16 == 0)
         {
           //printf("\n-----\n");
@@ -1690,6 +1692,7 @@ struct dsp_viterbi_64
 
     dsp_task::task* execute()
     {
+      //printf("viterbi worker ...\n");
 #if cc_now == cc_12
       execute_1_2();
 #elif cc_now == cc_23
@@ -1886,6 +1889,7 @@ public:
     for (size_t i = 0; i < m_nSource; i++)
     {
       m_Source[i] = rand();
+      //m_Source[i] =  0xAA;
     }
     m_Source[m_nSource - 1] = 0;
   }
@@ -2563,11 +2567,11 @@ int viterbi_test(float EbN0)
   ViterbiTest *vt = CreateObject<ViterbiTest>();
 
 #if cc_now == cc_12
-  dsp_viterbi_64<60, 128> *dv = CreateObject<dsp_viterbi_64<60, 128>>();
+  dsp_viterbi_64<96, 288> *dv = CreateObject<dsp_viterbi_64<96, 288>>();
 #elif cc_now == cc_23
-  dsp_viterbi_64<60, 128> *dv = CreateObject<dsp_viterbi_64<60, 128>>();
+  dsp_viterbi_64<96, 288> *dv = CreateObject<dsp_viterbi_64<96, 288>>();
 #elif cc_now == cc_34
-  dsp_viterbi_64<60, 144> *dv = CreateObject<dsp_viterbi_64<60, 144>>();
+  dsp_viterbi_64<96, 480> *dv = CreateObject<dsp_viterbi_64<96, 480>>();
 #endif
 
   dv->m_pSoftBits     = vt->m_Demapped;
@@ -2613,14 +2617,14 @@ int viterbi_test(float EbN0)
 #else
   printf("EbN0(dB)  :  AvgBER  :  MinBER\n");
 #if mod_now == mod_64qam
-  for (size_t i = 0; i < 80; i++)
+  for (size_t i = 0; i < 60; i++)
 #else
   for (size_t i = 0; i < 40; i++)
 #endif
   {
     SumBer = 0.0;
     MinBer = 100.0f;
-#define N 2
+#define N 10
     for (size_t i = 0; i < N; i++)
     {
 #if cc_now == cc_12 && mod_now == mod_bpsk
@@ -2654,7 +2658,7 @@ int viterbi_test(float EbN0)
       dv->Run1();
       //dv.UnitTest();
 
-      double fber = dsp_ber::ber(vt->m_Source, vt->m_Decoded, vt->m_nSource - 16);
+      double fber = dsp_ber::ber(vt->m_Source + 32, vt->m_Decoded + 32, vt->m_nSource - 128);
 
       if (fber < MinBer)
       {
@@ -2664,7 +2668,7 @@ int viterbi_test(float EbN0)
       SumBer += fber;
     }
     SumBer /= N;
-    printf("BER: %.2f : %.10f : %.10f\n", EbN0, SumBer, MinBer);
+    printf("BER: %.2f : \t %.10f : \t %.10f\n", EbN0, SumBer, MinBer);
     EbN0 += .5f;
   }
 #endif

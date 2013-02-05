@@ -108,6 +108,32 @@ namespace OpenDSP
                 }
             }
 
+            complexf cgasdev(long *idum, float var)
+            {
+              float fac,rsq,v1,v2;
+              complexf vc;
+
+              //do 
+              //{
+              //  v1        = 2.0f * ran1(idum) - 1.0f;
+              //  v2        = 2.0f * ran1(idum) - 1.0f;
+              //  rsq       = v1 * v1 + v2 * v2;
+              //} while (rsq >= 1.0f || rsq == 0.0f);
+
+
+              v1 = ran1(idum);
+              v2 = ran1(idum);
+              vc.re = sqrt(-2.0f * log(v1)) * cos(2*3.14*v2) * var;
+              vc.im = sqrt(-2.0f * log(v1)) * sin(2*3.14*v2) * var;
+
+              fac = 1.0f;
+              //fac           = sqrt(-2.0f * log(rsq) / rsq);
+
+              //vc.re = fac * v2 * var;
+              //vc.im = fac * v1 * var;
+              return vc;
+            }
+
 
             float gen_rand_uniform(long *idum) 
             {
@@ -117,16 +143,41 @@ namespace OpenDSP
 
             void pass_channel(complex16* psignal, size_t signallength, float norm_one, float EsN0)
             {
-                float sigma;
-                sigma = sqrt(0.5f * pow(10.0f, -0.1f * EsN0));
-
+              double sumes = 0.0;
                 for (size_t i = 0; i < signallength; i++)
                 {
-                    float noisere = norm_one * sigma * gasdev(&idum);
-                    float noiseim = norm_one * sigma * gasdev(&idum);
+                  double es = (double)psignal[i].re * (double)psignal[i].re + (double)psignal[i].im * (double)psignal[i].im;
+                  sumes += es;
+                }
 
-                    psignal[i].re += (__int16)noisere;
-                    psignal[i].im += (__int16)noiseim;
+                float avges = sumes / signallength;
+
+                float ps = 10 * log10(avges);
+                float pn = ps - EsN0;
+                float en = pow(10, pn / 10);
+
+                float sigma;
+                sigma = sqrt(en / 2);
+                
+                srand(GetTickCount());
+                for (size_t i = 0; i < signallength; i++)
+                {
+                  //float es = (float)psignal[i].re * (float)psignal[i].re + (float)psignal[i].im * (float)psignal[i].im;
+                  //es = 127 * 127;
+
+
+                  //sigma = sqrt(0.5f * es * pow(10.0f, -0.1f * EsN0));
+                  complexf cnoise = cgasdev(&idum, sigma);
+                    /*float noisere =  sigma * gasdev(&idum);
+                    float noiseim =  sigma * gasdev(&idum);*/
+                  /*int isigma = (int)sigma;
+                  float noisere = (rand() % (isigma) ) * (rand() % 2 == 0 ? 1 : -1);
+                  float noiseim = (rand() % (isigma) ) * (rand() % 2 == 0 ? 1 : -1);
+                    float ne = noisere * noisere + noiseim * noiseim;*/
+                    //printf("s: =%f, n= %f, s/n=%f\n", es, ne, 10 * log10(es/ ne));
+
+                    psignal[i].re += (__int16)cnoise.re;
+                    psignal[i].im += (__int16)cnoise.im;
                 }
             }
 

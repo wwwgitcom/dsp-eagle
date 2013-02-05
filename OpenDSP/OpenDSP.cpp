@@ -42,16 +42,16 @@ int _tmain(int argc, _TCHAR* argv[])
 {
   OpenDSP::global_init();
 
-  //if (argc == 2)
-  //{
-  //  viterbi_test(atof(argv[1]));
-  //}
-  //else
-  //{
-  //  viterbi_test(10.0f);
-  //}
-  //
-  //return 1;
+  if (argc == 2)
+  {
+    viterbi_test(atof(argv[1]));
+  }
+  else
+  {
+    viterbi_test(2.0f);
+  }
+  
+  return 1;
 
   //viterbi_check();
 
